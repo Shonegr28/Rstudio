@@ -1,0 +1,193 @@
+---
+title: "Lab1"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+## Task 1
+Get Working Directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+Reads ddt.csv File
+
+```{r}
+#returns first 6 lines
+ddt <-read.csv("DDT-1.csv")
+head(ddt)
+```
+
+## Task 3 
+Data Analysis & Subsetting
+
+
+Qualitative Variables: "River" & "Species"."
+
+Quantitative Variables: "Miles", "Length", "Width", & "ddt"
+
+
+
+```{r}
+#Number of Species
+length(unique(ddt$SPECIES))
+```
+
+```{r}
+# Species: LMBASS that has a WEIGHT bigger than 800gms
+filtered_LMBASS_data <- ddt[ddt$SPECIES == "LMBASS" & ddt$WEIGHT > 800, ]
+filtered_LMBASS_data
+```
+
+```{r}
+# RIVER: SCM that has DDT bigger than 4.0
+filtered_SCM_data <- ddt[ddt$RIVER == "SCM" & ddt$DDT > 4.0, ]
+filtered_SCM_data
+
+```
+
+## Task 4: Clicker Question
+### Question 1:
+```{r}
+# Mean length of fish in the ddt data frame
+mean(ddt$LENGTH)
+```
+
+### Question 2:
+```{r}
+# Standard deviation of the weight of fish in the ddt data frame 
+sd(ddt$WEIGHT)
+```
+
+### Question 3:
+```{r}
+plot(ddt$WEIGHT, ddt$LENGTH, xlab = "Weight", ylab = "Length")
+
+# Is this the plot of LENGTH vs WEIGHT from theddt data frame?
+# No, the graph is not the same because the axis are switched
+```
+
+### Question 4:
+```{r}
+v=1:20
+v/20
+
+
+# If v=1:20 what is the last value of v/20? 
+# 1.00
+```
+
+## Task 5: River Tables & Barplot
+
+Table of the rivers.
+```{r}
+RIVER_table= with(ddt,table(RIVER))
+RIVER_table
+```
+
+Color coded barplot of the rivers.
+```{r}
+barplot(RIVER_table, col = c("blue","red","green", "yellow"))
+```
+
+Table of the rivers crossed with the species of fish.
+```{r}
+RIVER_SPECIES_table =with(ddt,table(RIVER, SPECIES))
+RIVER_SPECIES_table
+```
+Barplot of the rivers crossed with the species of fish
+```{r}
+barplot(RIVER_SPECIES_table, beside=TRUE, col= c("blue","red","green", "yellow"))
+
+```
+
+## Task 6: Pie Chart
+
+Fish SPECIES pie chart
+
+```{r}
+fish_speices=table(ddt$SPECIES)
+pie(fish_speices, col = rainbow(3))
+```
+
+
+RIVER Pie Chart 
+
+```{r}
+RIV=table(ddt$RIVER)
+pie(RIV,  col = c("blue","red","green", "yellow") )
+```
+
+## Task 7 : Box Plots
+
+DDT Variable Boxplot
+```{r}
+boxplot(ddt$DDT)
+```
+
+WEIGHT Variable boxplot
+
+```{r}
+boxplot(ddt$WEIGHT)
+
+```
+
+LENGTH Variable Boxplot
+```{r}
+boxplot(ddt$LENGTH)
+
+```
+
+## Task 8: Coplots
+
+LENGTH Vs WEIGHT given RIVER coplots
+```{r}
+fish_colplot=with( ddt, ifelse( SPECIES == "CCATFISH","Red",
+                        ifelse(SPECIES=="SMBUFFALO","Blue","Green")))
+coplot( LENGTH~WEIGHT | RIVER, data=ddt ,col=fish_colplot)
+```
+
+DDT VS WEIGTH given SPECIES Coplot
+
+```{r}
+coplot(DDT ~ WEIGHT| SPECIES, data=ddt, col = fish_colplot)
+```
+
+## Task 9: ggplot
+
+Boxplot
+```{r}
+library(ggplot2)
+gg_plot <- ggplot(ddt, aes(x = SPECIES, y = WEIGHT, fill = RIVER)) + geom_boxplot() + ggtitle("Shone George Kutty Renjan")
+gg_plot
+```
+
+
+Violin Plot
+```{r}
+gg_plot2 <- ggplot(ddt, aes(x = RIVER, y = LENGTH, fill = SPECIES)) + geom_violin() + ggtitle("Shone George Kutty Renjan")
+gg_plot2
+
+
+```
+
+Scatterplot
+```{r}
+gg_plot3 <- ggplot(ddt, aes(x = WEIGHT, y = LENGTH, col = SPECIES)) + geom_point() + ggtitle("Shone George Kutty Renjan")
+gg_plot3
+
+
+```
+
