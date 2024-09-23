@@ -1,0 +1,342 @@
+---
+title: "lab4"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+# Tasks
+# Task 1 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+```
+
+## Task 2
+Reads the file that contains the data
+```{r}
+spruce= read.csv("SPRUCE.csv")
+tail(spruce)
+```
+
+## Task 3
+### Lowess smoother Scatter Plot (Height Vs BHDiameter) 
+```{r}
+library(s20x)
+trendscatter(Height~BHDiameter, f=0.5,spruce)
+```
+### Linear Model Object
+```{r}
+spruce.lm= with(spruce, lm(Height~BHDiameter))
+spruce.lm
+```
+### Residual
+```{r}
+height.res = residuals(spruce.lm)
+```
+### Fitted
+```{r}
+height.fit= fitted(spruce.lm)
+```
+
+### Residual vs Fitted
+```{r}
+plot(height.fit, height.res)
+```
+### Residual vs Fitted Trendscatter
+```{r}
+trendscatter(height.fit, height.res) 
+```
+
+### Shape of the plot
+The plot is symmetrical that the first. Its a quadratic graph.The data presented represents residuals plotted against the fitted values, providing insight into how well our linear model fits the observed data. Residuals are the differences between the actual data points and the values predicted by the model. Ideally, we aim to create a model where the residuals are as close to zero as possible, indicating that the model's predictions closely match the actual data.
+
+This curve is simalar to the previous trendscatter plot.
+
+### Residual Plot
+
+```{r}
+plot(spruce.lm, which =1) 
+
+```
+
+### Check Normality
+```{r}
+normcheck(spruce.lm,shapiro.wilk = TRUE) 
+
+```
+### P Value and Null Hyothesis
+The p-value is 0.29, which is greater than the significance level of 0.05. This suggests that we do not have enough evidence to reject the null hypothesis, which states that the errors are normally distributed. Therefore, we can conclude that the residuals in our model are likely to follow a normal distribution.
+
+A well-performing model should have residuals that are normally distributed. This is an important requirement for linear regression models, as normally distributed residuals suggest that the model accurately captures the data, with no systematic patterns in the errors.
+
+### Evaluate the model
+```{r}
+round(mean(height.res), 4)
+```
+
+Conclusions
+The plot of residuals versus fitted height values suggests that a straight-line model is not appropriate, as the residuals display a clear quadratic pattern. Instead of capturing random 'noise,' the model is picking up a systematic 'signal,' indicating that it doesn't fit the data well. To address this, we need to modify the model to better represent the underlying relationship in the data.
+
+
+## Task 4 
+
+### Fit a quadratic
+```{r}
+quad.lm=lm(Height~BHDiameter + I(BHDiameter^2), data=spruce)
+```
+
+### New plot and add quadratic curves
+```{r}
+coef(quad.lm)
+```
+
+
+
+```{r}
+# Create a plot of the 'spruce' object
+plot(spruce)
+
+# Define the quadratic function using coefficients from 'quad.lm'
+myplot = function(x) {
+  quad.lm$coef[1] + quad.lm$coef[2] * x + quad.lm$coef[3] * x ^ 2
+}
+
+# Add the quadratic curve to the existing plot
+curve(myplot, lwd = 2, col = "steelblue", add = TRUE)
+
+```
+
+### Quad.fit
+
+```{r}
+quad.fit = fitted(quad.lm)
+```
+
+### Residuals vs Fitted
+```{r}
+plot(quad.lm, which =1) 
+
+```
+
+### Check Normality
+```{r}
+normcheck(quad.lm,shapiro.wilk = TRUE) 
+
+```
+### Conclusion
+The p-value of 0.684 indicates that we fail to reject the null hypothesis. Examining the residuals versus fitted values plot from quad.Im, there is no noticeable trend, and the residuals range from approximately -4 to 4, which are relatively small. This suggests that we have achieved a satisfactory level of noise. Overall, the quadratic model provides a better fit to the data compared to the linear model.
+
+## Task 5 
+### quad.lm Summary
+```{r}
+summary (quad.lm)
+
+```
+### Beta at value
+$$
+β_0 = 0.860896  
+$$
+$$
+β_1 = 1.469592
+
+$$
+$$
+β_2 = -0.027457
+$$
+### Interval estimates
+
+```{r}
+ciReg(quad.lm)
+```
+
+### Equation of fitted line
+$$
+Height = 0.860896 + 1.469592x-0.027457x^2
+$$
+### Height Prediciton
+```{r}
+predict(quad.lm, data.frame(BHDiameter = c(15,18,20)))
+```
+
+### Comparison
+```{r}
+predict(spruce.lm, data.frame(BHDiameter = c(15,18,20)))
+
+```
+The quad.lm had a quadratic growth and was much bigger than the sprunce.lm
+
+### Multiple R-Squared
+
+#### quad.lm
+```{r}
+summary(quad.lm)$r.squared
+```
+
+#### spruce.lm
+```{r}
+summary(spruce.lm)$r.squared
+
+```
+
+### Adjusted R squared 
+
+#### quad.lm
+```{r}
+summary(quad.lm)$adj.r.squared
+```
+
+#### spruce.lm
+```{r}
+summary(spruce.lm)$adj.r.squared
+```
+The adjusted R-squared evaluates model fit while accounting for the number of predictors. A higher value indicates a better fit. Between spruce.Im (6468) and quad.Im (0.7604), quad.Im shows a better fit.
+
+### $multiple R^2$
+
+In this context, the multiple R-squared value reflects how well each model, specifically spruce.Im and quad.Im, explains the data. It indicates the goodness-of-fit for each model independently, rather than being influenced by the number or effectiveness of the variables included.
+
+### Model the most variability in the Height
+
+```{r}
+summary(quad.lm)$r.squared
+summary(quad.lm)$adj.r.squared
+summary(spruce.lm)$r.squared
+summary(spruce.lm)$adj.r.squared
+
+```
+
+### Anova
+
+```{r}
+anova(spruce.lm) 
+```
+```{r}
+anova(quad.lm) 
+
+```
+```{r}
+anova(spruce.lm,quad.lm) 
+
+```
+ANOVA stands for Analysis of Variance. The quadratic model has a smaller sum of squares for residuals, at 63.007, compared to the linear model's sum of squares of 95.703. This indicates that the quadratic model provides a better fit for the data.
+
+
+### TSS, MSS, RSS
+```{r}
+height.qfit=fitted(quad.lm)
+```
+
+#### TSS
+```{r}
+TSS=with(spruce,sum ((Height- mean(Height))^2))
+TSS
+```
+
+#### MSS
+```{r}
+MSS= with(spruce,sum ((height.qfit- mean(Height))^2))
+MSS
+```
+
+#### RSS
+```{r}
+RSS= with(spruce,sum ((Height- height.qfit)^2))
+RSS
+```
+#### MSS/TSS
+```{r}
+MSS/TSS
+```
+
+### Task 6
+
+#### Cook's Plot
+```{r}
+cooks20x(quad.lm, main = "Cook's distance plot for quad.lm")
+```
+### Cook's Definition 
+Cook's distance is used to identify the most influential data points in a regression analysis. In the Cook's distance plot, the y-axis represents Cook's distance, while the x-axis represents leverage. Data points with high Cook's distance are particularly influential and can significantly alter the model's coefficients.
+
+
+### Cook's distance for quad.lm
+For the quadratic model, the data points with the highest Cook's distance are 24, 18, and 21, indicating that these points have the most substantial impact on the model's coefficients, in that order.
+
+### quad2.lm
+```{r}
+quad2.lm=lm(Height~BHDiameter + I(BHDiameter^2) , data=spruce[-24,]) 
+
+```
+
+
+### quad2.lm Summary & Conclution
+
+```{r}
+summary(quad2.lm)
+```
+After removing the data point at 24, the multiple R-squared value for the updated quadratic model has increased. Additionally, the range of residuals in the revised quadratic model is narrower compared to the initial model. This indicates that the second model provides a better explanation of the variance in Height as a function of BHDiameter.
+
+
+
+
+### Task 7
+
+### Proof
+
+We have two lines with the point x_k in common.
+$$l_1 = \beta_0 + \beta_1x$$
+$$l_2 = \beta_0 + \delta + (\beta_1 + \zeta)x$$
+Next, we substitute the coordinates of the point x_k into both equations and set them equal to each other, since this point is shared by both lines.
+$$\beta_0 + \beta_1x^k = \beta_0 + \delta + (\beta_1 + \zeta)x^k$$ 
+$$\delta = -\zeta x^k$$ 
+
+$$y = \beta_0 - \zeta x^k + (\beta_1 + \zeta)x$$
+
+$$y = \beta_0 + \beta_1x + \zeta(x - x^k)$$
+
+
+$$y = \beta_0 + \beta_1x + \zeta(x - x^k)I(x > x^k)$$ 
+
+### Reproduce Plot
+```{r}
+sp2.df= within(spruce, x <- (BHDiameter - 18) * (BHDiameter > 18))
+sp2.df
+```
+```{r}
+lmp = lm(Height ~ BHDiameter + x, data = sp2.df)  
+tmp = summary(lmp)
+names(tmp)
+```
+
+
+```{r}
+spruce2=within(spruce, X<-(BHDiameter-18)*(BHDiameter>18))
+spruce2 
+lmp = lm(Height ~ BHDiameter + X, data = spruce2) 
+tmp = summary(lmp)
+myf = function(x,coef){
+  coef[1]+coef[2]*(x) + coef[3]*(x-18)*(x-18>0)
+}  
+plot(spruce,main="Piecewise regression")
+curve(myf(x,coef=tmp$coefficients[,"Estimate"] ),add=TRUE, lwd=2,col="Blue")
+abline(v=18)
+text(18,16,paste("R sq.=",round(tmp$r.squared,4) ))
+```
+### Task 8
+```{r}
+MATH4753SHON2024::myplot(spruce$BHDiameter) 
+```
+
+
+
+
+
+
+
+
