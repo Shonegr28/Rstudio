@@ -1,0 +1,455 @@
+---
+title: "Assignment3"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 16/16
+# Questions
+
+## Q1 MS 5.54
+Phishing attacks to email accounts. Refer to the Chance(Summer, 2007) article on phishing attacks at a company, Exercise 2.24 (p. 38). Recall that phishing describes an attempt to extract personal/financial information through fraudulent email. The company set up a publicized email account—called a “fraud box”—which enabled employees to notify them if they suspected an email phishing attack. If there is minimal or no collaboration or collusion from within the company, the interarrival times (i.e., the time between successive email notifications, in seconds) have an approximate exponential distribution with a meanof 95 seconds.
+$$
+\beta = 95 \Rightarrow \lambda = \frac{1}{95}.
+$$
+
+### a.
+What is the probability of observing an interarrival time of at least 2 minutes?
+```{r}
+1-pexp(120,1/95)
+```
+
+### b.
+Data for a sample of 267 interarrival times are saved in the PHISHING file. Do the data appear to follow an exponential distribution with b= 95?
+```{r}
+phish<- read.csv("PHISHING.csv")
+hist(phish$INTTIME, freq = FALSE)
+curve(dexp(x,1/95), from =0,to=400,add = TRUE)
+```
+```{r}
+mean(phish$INTTIME)
+sd(phish$INTTIME)
+```
+The data appear to follow an exponential distribution with b=95 because the mean and standard deviation are both close to 95, which matches the expected properties of an exponential distribution. Additionally, the graph shows a characteristic exponential decay, further supporting this fit.
+
+## Q2 MS 5.56
+Flood level analysis. Researchers have discovered that the maximum flood level (in millions of cubic feet per second) over a 4-year period for the Susquehanna River at Harrisburg, Pennsylvania, follows approximately a gamma
+distribution with a=3 and b =0.07 (Journal of Quality Technology, Jan. 1986).
+
+### a.
+Find the mean and variance of the maximum flood level over a 4-year period for the Susquehanna River.
+$$\mu= \alpha*\beta=3*0.07=0.21$$
+$$\sigma^2=\alpha*\beta^2=3*0.07^2= 0.0147$$
+
+### b. 
+The researchers arrived at their conclusions about the maximum flood level distribution by observing maximum flood levels over 4-year periods, beginning in 1890. Suppose that over the next 4-year period the maximum flood level was observed to be .60 millioncubic feet per second. Would you expect to observe a value this high from a gamma distribution with a = 3 and b= .07? What can you infer about the maximum flood level distribution for the 4-year period observed?
+```{r}
+curve(dgamma(x,3,shape=1/0.07),xlim=c(0, 15))
+```
+
+With this distribution, 0.6 million cubic feet per second would not be consistent. Based on their statistics, I can conclude that the greatest flood level was never more than 0.4 million cubic feet per second.
+
+
+## Q3 MS 5.60
+Reaction to tear gas. The length of time Y (in minutes) required to generate a human reaction to tear gas formula A has a gamma distribution with a = 2 and b= 2. The distribution for formula B is also gamma, but with a = 1 and b= 4.
+
+### a.
+Find the mean length of time required to generate a
+human reaction to tear gas formula A. Find the mean
+for formula B.
+
+Mean Equation 
+$$\mu= \alpha*\beta$$
+
+```{r}
+#Formula A has a gamma distribution with a = 2 and b= 2
+a=2
+b=2
+mu<-a*b
+result <- paste(mu, "minutes")
+result
+```
+```{r}
+#Formula B has a gamma distribution with a = 1 and b= 4
+a=1
+b=4
+mu<-a*b
+result <- paste(mu, "minutes")
+result
+```
+
+### b.
+Find the variances for both distributions.
+Variance Equation
+$$\sigma^2=\alpha*\beta^2$$
+```{r}
+#Formula A has a gamma distribution with a = 2 and b= 2
+a <- 2
+b <- 2
+sigma <- a * b^2
+result <- paste(sigma, "minutes²")
+result
+```
+
+```{r}
+#Formula A has a gamma distribution with a = 2 and b= 2
+a <- 1
+b <- 4
+sigma <- a * b^2
+result <- paste(sigma, "minutes²")
+result
+```
+
+### c.
+Which tear gas has a higher probability of generating a human reaction in less than 1 minute?
+```{r}
+#Formula A
+pgamma(1,2,0.5)
+```
+```{r}
+#Formula B
+pgamma(1,1,0.25)
+```
+By the gamma distrubtion we can find that Formula B has an higher probability of generating a human reaction in less than a mintue than Formula A.
+
+## Q4 MS 5.74
+Washing machine repair time. Based on extensive testing, a manufacturer of washing machines believes that the distribution of the time Y (in years) until a major repair is required has a Weibull distribution with and a=2 and b=4
+
+### a.
+If the manufacturer guarantees all machines against a major repair for 2 years, what proportion of all new washers will have to be repaired under the guarantee?
+
+$$P(y)=1-e^{-y^{\alpha/\beta}} $$
+```{r}
+pweibull(2,2,2)
+```
+0.632 of new washers will have to be repaired under the guarantee within 2 years
+
+### b. 
+Find the mean and standard deviation of the length of time until a major repair is required.
+```{r}
+mean=((4)^(1/2))*gamma((2+1)/2)
+mean
+
+```
+```{r}
+var= ((4)^(2/2))*(gamma((2+2)/2)-gamma((2+1)/2)*gamma((2+1)/2))
+sd=sqrt(var)
+sd
+```
+
+### c.
+```{r}
+# Find P(\mu-2\sigma<= Y<= \mu +2\sigma)
+pweibull(mean+2*sd,2,2)-pweibull(mean-2*sd,2,2)
+```
+### d.
+Is it likely that Y will exceed 6 years?
+```{r}
+mean-2*sd
+mean+2*sd
+
+```
+In c we determined about 96% needs to be replaced before 4 years, so we can say that many washer would not make to 6 years.
+
+## Q5 MS 5.84
+The proportion Y of a dataprocessing company’s yearly hardware repair budget allocated to repair its laser color printer has an approximate beta distribution with parameters a=2 and b=9.
+
+### a.
+Find the mean and variance of Y.
+$$\mu=\frac{\alpha}{\alpha+ \beta}\\ \sigma^2=\frac{\alpha\beta}{(\alpha+ \beta)^2(\alpha+ \beta+1)}$$
+```{r}
+a= 2
+b=9
+mu = (a)/(a+b)
+var= (a*b)/((a+b)^2*(a+b+1))
+result_mean <- paste("Mean of Y:", sprintf("%.4f", mu))
+result_var <- paste("Variance of Y:", sprintf("%.4f", var))
+result_mean
+result_var
+```
+
+### b.
+Compute the probability that for any randomly selected year, at least 40% of the hardware repair budget is used to repair the laser color printer
+```{r}
+1-pbeta(0.4,2,9)
+```
+
+### c. 
+What is the probability that at most 10% of the yearly repair budget is used for the laser color printer?
+```{r}
+pbeta(0.1,2,9)
+
+```
+
+## Q6 MS 5.114
+
+Weibull distribution
+$$
+f(y) = 
+\begin{cases} 
+      \frac{\alpha}{\beta} y^{\alpha-1} e^{\frac{-y^\alpha}{\beta}} & 0 \leq y < \infty \\
+      0 & \text{elsewhere}
+\end{cases}
+$$
+
+### a.
+What are the values of a and b?
+$$\alpha =2,\beta=16$$
+
+### b.
+Compute the mean and variance of Y
+```{r}
+mean=((16)^(1/2))*gamma((2+1)/2)
+mean
+```
+```{r}
+var= ((16)^(2/2))*(gamma((2+2)/2)-gamma((2+1)/2)*gamma((2+1)/2))
+var
+
+```
+
+### c. 
+Find the probability that a new memory chip will not fail before 6 years.
+```{r}
+1-pweibull(6,2,8)
+```
+
+
+
+## Q7 MS 6.2
+Tossing dice. Consider the experiment of tossing a pair of dice. Let X be the outcome (i.e., the number of dots appearing face up) on the first die and let Y be the outcome on the second die.
+
+### a.
+Find the joint probability distribution p(x, y).
+$$p(x,y)= \frac{x*\frac{1}{x}}{6}*\frac{y*\frac{1}{y}}{6}$$
+```{r}
+x=6
+y=6
+p=((x*(1/x))/6)*((y*(1/y))/6)
+p
+# 1/36
+```
+
+### b.
+Find the marginal probability distributions p1(x) and p2(y).
+$$p_1(x)=\sum_{n=1}^{6} \frac{x}{36}=\frac{6}{36}= \frac{1}{6}$$
+
+$$p_2(y)=\sum_{n=1}^{6} \frac{y}{36}=\frac{6}{36}= \frac{1}{6}$$
+
+### c.
+Find the conditional probability distributions p1(x|y) and p2(x|y)
+$$p_1(x|y)=\frac{p(x,y)}{p_2(y)}=\frac{6}{36}=\frac{1}{6}\\p_2(y|x)=\frac{p(x,y)}{p_1(y)}=\frac{6}{36}=\frac{1}{6}$$
+
+### d. 
+Compare the probability distributions of parts b and c.What phenomenon have you observed?
+The matching probabilities in parts b and c indicate that x and y occur independently of each other.
+
+
+## Q8 MS 6.4
+Modeling the behavior of granular media. Refer to the Engineering Computations: International Journal for Computer-Aided Engineering and Software (Vol. 30, No. 2, 2013) study of the properties of granular media (e.g., sand, rice, ball bearings, and flour), Exercise 3.62 (p. 120). The study assumes there is a system of N non-interacting granular particles, where the particles are grouped accord- ing to energy level, r. For this problem (as in Exercise N= 7 r = 3, 3.62), assume that and then consider the scenario where there is one particle (of the total of 7 parti- cles) at energy level 1, two particles at energy level 2, and four particles at energy level 3. Another feature of the par- ticles studied was the position in time where the particle reached a certain entropy level during compression. All particles reached the desired entropy level at one of three time periods, 1, 2, or 3. Assume the 7 particles had the characteristics shown in the table. Consider a randomly selected particle and let X represent the energy level and Y the time period associated with particle.
+
+### a.
+Find the bivariate probability distribution, p(x,y)
+$$p(x,y) = p_1(x)p_2(y|x)$$
+
+### b.
+Find the marginal distribution p1(x)
+$$p_1(x) = \sum_{y}p(x,y) = p(x,1) + p(x,2) + p(x,3)\\p_1(1) = \sum_{y}p(1,y) =  \frac{1}{7} + 0 + 0 = \frac{1}{7}\\p_1(2) = \sum_{y}p(2,y) =  \frac{2}{7} + 0 + 0 = \frac{2}{7}\\p_1(3) = \sum_{y}p(3,y) =  \frac{1}{7} + \frac{2}{7} + \frac{1}{7} = \frac{4}{7}$$
+
+
+### c.
+Find the marginal distribution p2(x)
+$$p_2(y) = \sum_{x}p(x,y) = p(x,1) + p(x,2) + p(x,3) \\p_2(1) = \sum_{x}p(x,1) = \frac{1}{7} + \frac{2}{7} + \frac{1}{7} = \frac{4}{7}\\p_2(2) = \sum_{x}p(x,2) = 0 + 0 + \frac{2}{7} = \frac{2}{7}\\p_2(3) = \sum_{x}p(x,3)  = 0 + 0 + \frac{1}{7} = \frac{1}{7}$$
+
+### d.
+Find the conditional distribution, p2(y|x)
+$$
+p(x,y) = p_1(x)p_2(y|x)\\ 
+p_2(y|x) = \frac{p(x,y)}{p_1(x)}
+$$
+
+$$p_2(y|x) = \frac{p(x,y)}{p_1(x)}\\p_2(y|1) = \frac{\frac{1}{7}}{\frac{1}{7}} + \frac{0}{\frac{1}{7}} + \frac{0}{\frac{1}{7}}= 1
++ 0 + 0\\p_2(y|2) \frac{\frac{2}{7}}{\frac{2}{7}} + \frac{0}{\frac{1}{7}} + \frac{0}{\frac{1}{7}}= 1
++ 0 + 0\\p_2(y|3) = \frac{\frac{1}{7}}{\frac{4}{7}} + \frac{\frac{2}{7}}{\frac{4}{7}} + \frac{\frac{1}{7}}{\frac{4}{7}}= \frac{1}{4} + \frac{2}{4} + \frac{1}{4}$$
+
+## Q9 MS 6.12
+Distribution of low bids. The Department of Transportation (DOT) monitors sealed bids for new road construction. For new access roads in a certain state, let X= low bid (thousands of dollars) and let Y= DOT estimate of fair cost of building the road (thousands of dollars). The joint probability density of X and Y is
+$$
+f(x,y)= \frac{e^\frac{-y}{10}}{10y},0<y<x<2y
+
+$$
+
+### a. 
+Find f(y), the marginal density function for Y. Do you recognize this distribution?
+$$f_2(y)= \int_{-\infty}^{\infty} f(x,y) \, dx= \int_{y}^{2y}\frac{e^\frac{-y}{10}}{10y}dx=\frac{e^\frac{-y}{10}}{10y}[x]^{2y}_{y} =\frac{e^\frac{-y}{10}}{10}$$
+This is an Exponential Distribution.
+
+### b. 
+What is the mean DOT estimate, E(Y)?
+$$E(Y)=\int{y}f(y)dy\\ =\int_{0}^{\infty} \frac{ye^\frac{-y}{10}}{10}dy=\frac{1}{10}\int_{0}^{\infty}y^{2-1}e^\frac{-y}{10}dy\\E(Y)=10$$
+
+
+
+## Q10 MS 6.14
+Servicing an automobile. The joint density of X, the total time (in minutes) between an automobile’s arrival in the service queue and its leaving the system after servicing, and Y, the time (in minutes) the car waits in the queue be- fore being serviced, is
+ 
+$$f(x,y) =\begin{cases} 
+      ce^{-x^2} &  0 \leq \ y \leq x; 0 \leq x\leq\infty \\
+      0 & \text{elsewhere}
+\end{cases}$$
+
+
+### a
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment3/10a.jpg")
+
+```
+
+### b.
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment3/10b.jpg")
+
+```
+
+### c. 
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment3/10c.jpg")
+
+```
+
+
+## Q11 MS 6.51
+As an illustration of why the converse of Theorem 6.6 is not true, consider the joint distribution of two discrete random variables, X and Y, shown in the accompanying table. Show that Cov(X,Y)=0 but that X and Y are dependent.
+$$ Cov(X,Y)= E(XY) - E(X)E(Y)\\ E(XY)=\sum_x \sum_yxyp(X,Y)=0\\E(X)=\sum_x xp_1(x)=0\\E(Y)=\sum_x xp_2(y)=0 $$
+The X and Y are dependent brcause Cov(X,Y)=0, but p(x,y) doesn't equal p1(x)*p2(y).
+
+## Q12 MS 6.74
+Uranium in the Earth’s crust. Refer to the American Min- eralogist (October 2009) study of the evolution of urani- um minerals in the Earth’s crust, Exercise 5.17 (p. 199). Recall that researchers estimate that the trace amount of uranium Y in reservoirs follows a uniform distribution ranging between 1 and 3 parts per million. In a random sample of n=60 eservoirs, let Y' represent the sample mean amount of uranium.
+
+### a.
+Find E(Y') and interpret its value
+$$E(\bar{Y})= \frac{n\mu_Y}{n}= \mu_Y=2$$
+
+### b.
+Find Var(Y')
+$$V(\bar{Y})=(\frac{1}{n})^2(n\sigma^{2}_{Y})=\frac{\sigma^{2}_{Y}}{n}=\frac{(3-1)^2}{12n}\approx 0.00556$$
+
+### c.
+Sample distribution will be normal distribution by CLT.
+
+### d. 
+Find the probability that Y' is between 1.5ppm and 2.5ppm
+```{r}
+pnorm(2.5,2,4/720)-pnorm(1.5,2,4/720)
+
+```
+
+### e.
+Find the probability that Y' exceeds 2.2 ppm
+```{r}
+1-pnorm(2.2,2,4/720)
+```
+
+
+## Q13 MS 6.90
+Mercury contamination of swordfish. Consumer Reports found widespread contamination of seafood in New York and Chicago supermarkets. For example, 40% of the swordfish pieces available for sale have a level of mercury above the Food and Drug Administration (FDA) limit. Consider a random sample of 20 swordfish pieces from New York and Chicago supermarkets.
+
+### a.
+Use the normal approximation to the binomial to calculate the probability that fewer than 2 of the 20 swordfish pieces have mercury levels exceeding the FDA limit.
+```{r}
+n=20
+p=0.4
+mean=n*p
+sd=sqrt(n*p*(1-p))
+pnorm(2.5,mean,sd)
+```
+
+### b.
+Use the normal approximation to the binomial to calcu- late the probability that more than half of the 20 sword- fish pieces have mercury levels exceeding the FDA limit.
+```{r}
+1-pnorm(10.5,mean,sd)
+
+```
+Use the binomial tables to calculate the exact probabilities in parts a and b. Does the normal distribution provide a good approximation to the binomial distribution?
+### c.
+```{r}
+pbinom(2,20,0.4)
+1-pbinom(10,20,0.4)
+
+```
+
+## Q14 MS 7.108
+Lead and copper in drinking water. Periodically, the Hillsborough County (Florida) Water Department tests the drinking water of homeowners for contaminants such as lead and copper. The lead and copper levels in water specimens collected for a sample of 10 residents of the Crystal Lake Manors subdivision are shown next.
+
+### a.
+Construct a 99% confidence interval for the mean lead level in water specimens from Crystal Lake Manors.
+```{r}
+df<- read.csv("LEADCOPP.csv")
+lead <- df$LEAD
+t.test(lead,conf.level=0.99)
+```
+
+### b.
+Construct a 99% confidence interval for the mean cop- per level in water specimens from Crystal Lake Manors
+```{r}
+df<- read.csv("LEADCOPP.csv")
+copper <- df$COPPER
+t.test(copper,conf.level=0.99)
+
+```
+
+### c.
+Interpret the intervals, parts a and b, in the words of the problem.
+99% of the confidence intervals shows the mean level of lead.
+99% of the confidence intervals shows the mean level of copper
+
+### d. 
+Discuss the meaning of the phrase, “99% confident.”
+It is reasonable to suppose that, out of many of these intervals, 99% will contain the true value and 1% will not.
+
+## Q15 MS 7.114
+Solar irradiation study. The Journal of Environmental Engineering (Feb. 1986) reported on a heat transfer model designed to predict winter heat loss in wastewater treatment clarifiers. The analysis involved a comparison of clear-sky solar irradiation for horizontal surfaces at dif- ferent sites in the Midwest. The day-long solar irradia- tion levels (in BTU/sq. ft.) at two midwestern locations of different latitudes (St. Joseph, Missouri, and Iowa Great Lakes) were recorded on each of seven clear-sky winter days. The data are given in the table. Find a 95% confidence interval for the mean difference between the day-long clear-sky solar irradiation levels at the two sites. Interpret the results.
+```{r}
+df<- read.csv("SOLARAD.csv")
+JOS <- df$STJOS
+t.test(JOS,n=64,conf.level=0.95)
+
+
+```
+```{r}
+ia <- df$IOWA
+t.test(ia,n=64,conf.level=0.95)
+```
+This indicates that 95% of the time, the mean solar radiation value for each city can be found inside its appropriate interval.
+
+## Q16 MS 7.116
+Diazinon residue in orchards. Pesticides applied to an ex- tensively grown crop can result in inadvertent areawide air contamination. Environmental Science & Technology (Oct. 1993) reported on air deposition residues of the in- secticide diazinon used on dormant orchards in the San Joaquin Valley, California. Ambient air samples were col- lected and analyzed at an orchard site for each of 11 days during the most intensive period of spraying. The levels of diazinon residue (in mg/m3) during the day and at night are recorded in the table. The researchers want to know whether the mean diazinon residue levels differ from day to night.
+
+### a.
+Analyze the data using a 90% confidence interval.
+```{r}
+dia <- read.csv("DIAZINON.csv")
+
+day <- dia$DAY
+night <- dia$NIGHT
+
+t.test(day,conf.level=0.9)
+t.test(night,conf.level = 0.9)
+
+```
+
+### b.
+What assumptions are necessary for the validity of the interval estimation procedure of part a?
+The real value must be assumed to be present in 90% of the intervals that are generated.
+
+### c.
+Use the interval, part a, to answer the researchers’question.
+It is true that the average diazinon levels vary from day to night.
