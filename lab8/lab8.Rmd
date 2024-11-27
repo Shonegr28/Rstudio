@@ -1,0 +1,252 @@
+---
+title: "Lab 8"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Task 1
+
+```{r}
+getwd()
+```
+
+
+
+## Task 2
+Create a sample of size n=10 from a uniform distribution that has lower limit 0 and upper limit 5 by using runif(10,0,5). 
+```{r}
+a=0;
+b=5;
+sample=runif(10,a,b)
+sample
+```
+
+Mean and variance of the uniform
+```{r}
+mu= (a+b)/2
+v=(b-a)^2/12
+c( mu , v )
+```
+Sample mean variance
+```{r}
+xbar=mean(sample)
+sample_variance=var(sample)
+c(xbar,sample_variance)
+```
+The sample mean tends to be close to 𝜇, while the sample variance is typically near σ^2, though there can be considerable variation. From the information provided, we can infer the following:
+$$E(Ȳ)=(Y_i)=𝜇=(a+b)/2), $$
+$$ E(T)=nE(Y_i)=n𝜇=n((a+b)/2),V(Ȳ) = 1/nV(Y_i)=(1/n)σ^2= (b-a)^2/12n, $$
+$$V(T) = nV(Y_i)=nσ^2= n((b-a)^2/12)$$
+We are given the function myclt, which l've reproduced below as cit.
+```{r}
+clt <- function(n, iter){
+  y<- runif(n* iter, a,b) #A
+  data<- matrix(y,nr=n,nc=iter, byrow = T) #B
+  sm<- apply(data,2,sum) # C
+  hist(sm)
+  sm
+}
+w<- clt(n=10,iter=10000) #D
+```
+In line A, we generate a random sample of size n×iter from a uniform distribution defined by parameters  a and  b. In line B, this sample is arranged into a matrix with  n rows and iter iter columns, effectively dividing the large sample into iter iter smaller samples, each of size  n. In line C, we calculate the sum of the columns (representing each sample) of the matrix. In line D, we execute the function with 𝑛 = 10  anditer=10,000, storing the output in the object 𝑤 , while the histogram is displayed on the graphical device. After completing the simulation, we will summarize the mean and variance of the resulting sample sums.
+
+```{r}
+mean(w)
+```
+```{r}
+var(w)
+```
+We were tasked with modifying the function to return sample means rather than sums. I achieved this by altering the function passed to apply in the new version. With this change, we will proceed to calculate the mean and variance of the sample means, just as we did for the sample totals.
+
+```{r}
+clt.mean <- function(n, iter){
+  y<- runif(n* iter, a,b) #A
+  data<- matrix(y,nr=n,nc=iter, byrow = T) #B
+  m<- apply(data,2,mean) # C
+  hist(m)
+  m
+}
+w<- clt.mean(n=10,iter=10000) #D
+```
+```{r}
+mean(w)
+```
+```{r}
+var(w)
+```
+
+
+
+## Task 3
+```{r}
+mycltu=function(n,iter,a=0,b=10){
+## r-random sample from the uniform
+y=runif(n*iter,a,b)
+## Place these numbers into a matrix
+## The columns will correspond to the iteration and the rows will equal the sample size n
+data=matrix(y,nr=n,nc=iter,byrow=TRUE)
+## apply the function mean to the columns (2) of the matrix
+## these are placed in a vector w
+w=apply(data,2,mean)
+## We will make a histogram of the values in w
+## How high should we make y axis?
+## All the values used to make a histogram are placed in param (nothing is plotted yet)
+param=hist(w,plot=FALSE)
+## Since the histogram will be a density plot we will find the max density
+
+ymax=max(param$density)
+## To be on the safe side we will add 10% more to this
+ymax=1.1*ymax
+## Now we can make the histogram
+hist(w,freq=FALSE,  ylim=c(0,ymax), main=paste("Histogram of sample mean",
+"\n", "sample size= ",n,sep=""),xlab="Sample mean")
+## add a density curve made from the sample distribution
+lines(density(w),col="Blue",lwd=3) # add a density plot
+## Add a theoretical normal curve 
+curve(dnorm(x,mean=(a+b)/2,sd=(b-a)/(sqrt(12*n))),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+## Add the density from which the samples were taken
+curve(dunif(x,a,b),add=TRUE,lwd=4)
+
+}
+```
+
+The apply function's second argument (MARGIN) determines whether the function operates on the rows or columns of the matrix. When set to 2, it acts on the matrix's columns.
+With n = 20 and iter = 100000, y is a sample of size n * iter, resulting in a matrix containing 2,000,000 (two million) elements.
+We know that the variance of a uniform distribution is given by σ² = (b-a)²/12. Because V(Y̅) = V(Y)/n, we can also say that σ_Y̅ = ((b-a)²/12n), which tells us that σ_Y̅ = (b-a)/√(12n)
+
+```{r}
+for (n in c(1,2,3,5,10,30)) {
+  mycltu(n=n,iter=10000, a=0,b=10)
+  
+}
+```
+The sampling distribution of a uniform distribution begins to resemble a Normal distribution even at small sample sizes (as low as 𝑛 = 3). Additionally, the mean of the sampling distribution appears to stay consistent regardless of the sample size. This supports the Central Limit Theorem (CLT), though it certainly does not require our validation.
+
+
+## Task 4
+Binomaial distribution, adescrete distrubition, to applty to central limit Therom
+```{r}
+mycltb=function(n,iter,p=0.5,...){
+
+## r-random sample from the Binomial
+y=rbinom(n*iter,size=n,prob=p)
+## Place these numbers into a matrix
+## The columns will correspond to the iteration and the rows will equal the sample size n
+data=matrix(y,nr=n,nc=iter,byrow=TRUE)
+## apply the function mean to the columns (2) of the matrix
+## these are placed in a vector w
+w=apply(data,2,mean)
+## We will make a histogram of the values in w
+## How high should we make y axis?
+## All the values used to make a histogram are placed in param (nothing is plotted yet)
+param=hist(w,plot=FALSE)
+## Since the histogram will be a density plot we will find the max density
+
+ymax=max(param$density)
+## To be on the safe side we will add 10% more to this
+ymax=1.1*ymax
+
+## Now we can make the histogram
+## freq=FALSE means take a density
+hist(w,freq=FALSE,  ylim=c(0,ymax),
+main=paste("Histogram of sample mean","\n", "sample size= ",n,", p = ",p, sep=""),
+xlab="Sample mean",...)
+## add a density curve made from the sample distribution
+#lines(density(w),col="Blue",lwd=3) # add a density plot
+## Add a theoretical normal curve 
+curve(dnorm(x,mean=n*p,sd=sqrt(p*(1-p))),add=TRUE,col="Red",lty=2,lwd=3) 
+
+}
+mycltb.p <- function(p=0.5,...){
+  for(n in c(4,5,10,20)){
+    mycltb(n=n, iter=10000, p=p,...)
+  }
+}
+
+```
+
+P=0.3
+```{r}
+mycltb.p(0.3);
+```
+```{r}
+mycltb.p(0.7);
+
+```
+```{r}
+mycltb.p(0.5);
+
+```
+We observe that sampling distributions derived from the binomial distribution appear approximately Normal, starting around n = 5. The mean value varies with both p and n (as E(Y) = np for a binomial distribution). Notably, the Central Limit Theorem (CLT) holds for discrete distributions as well, as we've demonstrated.
+
+
+## Task 5
+Poisson distribution
+```{r}
+mycltp=function(n,iter,lambda=10,...){
+
+## r-random sample from the Poisson
+y=rpois(n*iter,lambda=lambda)
+## Place these numbers into a matrix
+## The columns will correspond to the iteration and the rows will equal the sample size n
+data=matrix(y,nr=n,nc=iter,byrow=TRUE)
+## apply the function mean to the columns (2) of the matrix
+## these are placed in a vector w
+w=apply(data,2,mean)
+## We will make a histogram of the values in w
+## How high should we make y axis?
+## All the values used to make a histogram are placed in param (nothing is plotted yet)
+param=hist(w,plot=FALSE)
+## Since the histogram will be a density plot we will find the max density
+
+ymax=max(param$density)
+## To be on the safe side we will add 10% more to this
+ymax=1.1*ymax
+
+## Make a suitable layout for graphing
+layout(matrix(c(1,1,2,3),nr=2,nc=2, byrow=TRUE))
+
+## Now we can make the histogram
+hist(w,freq=FALSE,  ylim=c(0,ymax), col=rainbow(max(w)),
+main=paste("Histogram of sample mean","\n", "sample size= ",n," iter=",iter," lambda=",lambda,sep=""),
+xlab="Sample mean",...)
+## add a density curve made from the sample distribution
+#lines(density(w),col="Blue",lwd=3) # add a density plot
+## Add a theoretical normal curve 
+curve(dnorm(x,mean=lambda,sd=sqrt(lambda/n)),add=TRUE,col="Red",lty=2,lwd=3) # add a theoretical curve
+
+# Now make a new plot
+# Since y is discrete we should use a barplot
+barplot(table(y)/(n*iter),col=rainbow(max(y)), main="Barplot of sampled y", ylab ="Rel. Freq",xlab="y" )
+x=0:max(y)
+plot(x,dpois(x,lambda=lambda),type="h",lwd=5,col=rainbow(max(y)),
+main="Probability function for Poisson", ylab="Probability",xlab="y")
+}
+mycltp.lambda <- function(lambda=10, iter=10000,...){
+  for(n in c(2,3,5,10)){
+    mycltp(n=n,iter=iter,lambda=lambda,...)
+  }
+}
+mycltp.lambda(4)
+```
+```{r}
+mycltp.lambda(10)
+
+```
+
+## Task 6
+```{r}
+library(MATH4753SHON2024)
+graph<- cltp(n=7, iter = 10000)
+```
+
+
