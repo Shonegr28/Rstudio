@@ -1,0 +1,414 @@
+---
+title: 'Ass 2: Template'
+author: "Shone George Kutty Renjan"
+date: '`r format(Sys.Date(),format="%A, %B %d, %Y")`'
+output: 
+  html_document:
+    df_print: paged
+    fig_caption: true
+    highlights: pygments
+    number_sections: no
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE, fig.align='center'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions{}
+
+## Q 1
+```{r}
+# Question 1 Table
+table = matrix(c(0.9212, 0.7455, 0.9932, 0.4482, 1.0, 0.7703), nrow=3, ncol=2, byrow=TRUE, dimnames = list(c('Match', 'Similar Distracter', 'Non-similar Distracter'), c('Fingerprint experts', 'Novices')))
+table
+
+
+```
+### a.
+```{r}
+# Given a pair of matched prints. What is the probability that an expert will fail to identify the match?
+failmatchprob = (1-table[1,1])/(sum(table["Match",]))
+failmatchprob
+```
+
+### b.
+```{r}
+## Given a pair of matched prints, what is the probability that a novice will fail to identify the match?
+novicefailmatchprob = (1- table[1,2])/(sum(table["Match",]))
+novicefailmatchprob
+```
+### c.
+Assume the study included 10 participants, 5 experts and 5 novices. Suppose that a pair of matched prints are presented to a randomly selected study participant and the participant fails to identify the match. Is the participant more likely to be an expert or a novice?
+
+Novice, because the likelihood of a novice failing to find the match is higher than that of an expert
+
+
+## Q 2
+
+```{r}
+table1 = matrix(c(50, 9, 50, 891), ncol=2, byrow=TRUE, dimnames = list(c('Positive', 'Negative'), c('Users', 'Non-users')))
+addmargins(table1)
+```
+
+### a.
+```{r}
+# Given the athlete is a user, find the probability that a drug test for testosterone will yield a positive result. This probability represents the sensitivity of the drug test.
+
+posuser =  (table1[1,1])/(sum(table1[,"Users"]))
+posuser
+
+```
+
+### b. 
+```{r}
+#Given the athlete is a nonuser, find the probability that a drug test for testosterone will yield a negative result. This probability represents the specificity of the drug test.)
+negnonuser = table1[2,2]/(sum(table1[,"Non-users"]))
+negnonuser
+```
+### c.
+```{r}
+# IF an athlete tests positive for testosterone, use Bayes' Rule to find the probability that the athlete is really doping. (This probability represents the positive predictive value of the drug test.)
+## Bayes' Rule = (P(Positive | Doping)*P(Doping))/P(Positive)
+totalNonuserUser = sum(table1[, "Users"]) + sum(table1[, "Non-users"])
+totalpositive=sum(table1["Positive",])
+priorProbDope = sum(table1[,"Users"]) / totalNonuserUser
+totalProbpostive = totalpositive/totalNonuserUser
+reallyDoping = (posuser*priorProbDope)/totalProbpostive
+reallyDoping
+
+
+```
+## Q 3
+
+Base Case: For a single set with n₁ elements, we can create n₁ different samples by choosing one element. Thus, for k=1, the principle holds.
+Inductive Step: Assume the principle holds for k sets, i.e., the number of samples is n₁ * n₂ * ... * nₖ.
+For k+1 sets, consider the samples from k sets (n₁ * n₂ * ... * nₖ) and pair each with an element from the (k+1)th set (nₖ₊₁). This results in (n₁ * n₂ * ... * nₖ) * nₖ₊₁ samples.
+Therefore, by induction, the Multiplicative Principle holds for all k ∈ ℕ. for all𝑘∈ℕk∈N
+
+
+
+
+## Q 4
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment2/4.jpg")
+
+```
+
+
+
+## Q 5
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment2/5.png")
+```
+
+## Q 6
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment2/6.jpg")
+
+```
+
+## Q 7
+```{r}
+table2 = matrix(c(0.09, 0.3, 0.37, 0.2, 0.04), nrow = 1, byrow = TRUE, dimnames = list(c('p(y)'), c('0', '1', '2', '3', '4')))
+table2
+
+```
+
+### a. 
+```{r}
+###.Verify that the probabilities for Y in the table sum to 1.
+sum(table2['p(y)',])
+```
+
+### b. 
+```{r}
+### Find the probability that three or four of the homes in the sample have a dust mite level that exceeds 2 g/g.
+probhouse3orprobhouse4 = table2[1,4]+ table2[1,5]
+probhouse3orprobhouse4
+
+
+```
+
+### c.
+```{r}
+### Find the probability that fewer than two homes in the sample have a dust mite level that exceeds 2 g/g.
+probhouse0orprobhouse1 = table2[1,1]+ table2[1,2]
+probhouse0orprobhouse1
+```
+
+
+
+## Q 8
+```{r}
+# Creating a matrix with 21 rows and 2 columns
+number_of_apps <- c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
+probabilities <- c(0.17, 0.10, 0.11, 0.11, 0.10, 0.10, 0.07, 0.05, 0.03, 0.02, 0.02, 0.02, 0.02, 0.02, 0.01, 0.01, 0.01, 0.01, 0.01, 0.005, 0.005)
+table4 <- matrix(c(number_of_apps, probabilities), ncol = 2, byrow = FALSE, dimnames = list(NULL, c('Number of apps used', 'p(y)')))
+
+
+table4
+
+```
+### a.
+```{r}
+## Show that the properties of a probability distribution for a discrete random variable are satisfied.
+non_negativity_check <- all(probabilities >= 0)
+non_negativity_check 
+normalization_check <- sum(probabilities) 
+normalization_check ## True
+
+```
+
+### b.
+```{r}
+# Find P(Y ≥ 10).
+P_Y10 <- sum(probabilities[11:length(probabilities)])
+P_Y10
+```
+
+### c. 
+```{r}
+## Find the mean and variance of Y.
+mean(probabilities)
+```
+
+```{r}
+(sd(probabilities))^2
+```
+
+
+### d.
+```{r}
+## Give an interval that will contain the value of Y with a probability of at least .75.
+sum(table4[,"p(y)"])
+```
+## Q 9
+$$n = 25$$ 
+$$p = .70$$
+### a.
+```{r}
+# Find P(Y = 10).
+dbinom(10,25,0.7)
+```
+
+### b. 
+```{r}
+# Find P(Y ≤ 5).
+pbinom(5,25,0.7)
+```
+
+### c. 
+```{r}
+# Find the mean u and standard deviation o for Y.
+μ= 25*.7
+μ
+σ= sqrt(25 *0.7 *0.3)
+σ
+
+```
+
+### d.
+Out of 25 students who receive their PhDs, around 18 are non-foreign nationals, with a standard deviation of 2.29.
+
+
+## Q 10
+
+### a.
+```{r}
+## What is the probability that exactly 5 trains are assigned to each of the 10 tracks?
+## 50!/40!
+assignedprob=((factorial(50))/(factorial(45)))/((factorial(50))/(factorial(40)))
+assignedprob
+```
+
+### b. 
+```{r}
+## A track is considered underutilized if fewer than 2 trains are assigned to the track during the day. Find the probability that Track #1 is underutilized.
+probtrackunderutilized = dbinom(0,50,0.1)+dbinom(1,50,0.1)
+probtrackunderutilized
+```
+
+## Q 11
+### a.
+Give a formula for the probability distribution of Y.
+(P(Y == y) == p * q^(y - 1))
+
+```{r}
+p=(12+6+4+18)/(100)
+p
+
+```
+
+### b.
+$$ E(Y)= p/1$$
+ What is E(Y)? Interpret the result.
+This formula calculates the expected number of trials needed to encounter a consumer who provides a reason for purchasing the product that differs from the information presented on its label or packaging.
+
+### c.
+```{r}
+# Find P(Y = 1).
+dgeom(1,p)
+
+```
+
+### d. 
+```{r}
+1-pgeom(2,p)
+
+```
+
+## Q 12
+
+### a.
+```{r}
+## In a random sample of 10 of the 209 facilities, what is the expected number in the sample that treats hazardous waste on-site? Interpret this result.
+p=8/209
+n=10
+
+E=p*n
+cat("Treating onsite: ",E)
+```
+There at least 1 facility treats hazardous waste on site.
+
+### b. 
+```{r}
+## Find the probability that 4 of the 10 selected facilities treat hazardous waste on-site.
+dhyper(4,8,201,10)
+
+```
+
+
+## Q 13
+### a. 
+
+Find the variance of Y.
+$$
+E(Y)=0.03 
+$$
+$$
+Var(Y)= E(Y) =0.03
+$$
+
+### b. 
+Discuss the conditions that would make the researchers' Poisson assumption plausible.
+
+The experiment involves recording how often the event Y, which is rare, happens within a specific period, area, volume, or any other defined measurement unit.
+The likelihood of the event occurring is consistent across all units of time, area, or volume, and these units do not overlap.
+The occurrence of events in one unit is independent of their occurrence in any other unit.
+
+### c.
+```{r}
+## What is the probability that a deep-draft U.S. flag vessel will have no casualties in a 3-year time period?
+dpois(0,0.03)
+
+```
+
+## Q 14
+### a.
+```{r}
+findc <- function(c) {
+  integrate(function(y) (c * (2 - y)) / 10, lower = 0, upper = 1)$value
+}
+
+cvalue <- 2 / 3  # Use 'cvalue' here
+integral_value <- findc(cvalue)  # Use 'cvalue' here as well
+cat("c =", cvalue)
+
+
+```
+
+### b. 
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment2/15.jpg")
+
+```
+
+
+### c.
+
+```{r}
+F <- function(y){(cvalue)*(2*y-((y^2)/2))}
+
+```
+
+
+### d.
+```{r}
+F(0.6)-F(0.1)
+```
+
+## Q 15 
+### a-c
+```{r}
+knitr::include_graphics("/Users/shonerenjan/Desktop/ASM/Assignments/Assignment2/16.jpg")
+
+```
+
+
+## Q 16
+
+$$𝜇=50$$
+$$𝜎=3.2$$
+
+
+
+### a.
+```{r}
+# exceeding 45 milligrams per liter.
+1-pnorm(45,50,3.2)
+
+```
+
+### b.
+```{r}
+# b. below 55 milligrams per liter.
+pnorm(55,50,3.2)
+
+```
+
+### c. 
+```{r}
+# between 51 and 52 milligrams per liter.
+pnorm(52,50,3.2)-pnorm(51,50,3.2)
+
+```
+
+
+## Q 17
+
+### a.
+```{r}
+#Find the probability that the rating will fall between 500 and 700 points.
+pnorm(700,605,185)-pnorm(500,605,185)
+
+```
+
+### b. 
+```{r}
+## Find the probability that the rating will fall between 400 and 500 points.
+pnorm(500,605,185)-pnorm(400,605,185)
+
+```
+### c. 
+```{r}
+# Find the probability that the rating will be less than 850 points.
+pnorm(850,605,185)
+
+```
+
+### d.
+```{r}
+# Find the probability that the rating will exceed 1,000 points.
+1-pnorm(1000,605,185)
+
+```
+
+### e.
+```{r}
+# What rating will only 10% of the crash-tested cars exceed?
+qnorm(0.9,605,185)
+
+```
