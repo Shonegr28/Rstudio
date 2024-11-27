@@ -1,0 +1,239 @@
+---
+title: "Assignment1"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+| cs     | Col2    | Col3ddssd |
+|--------|---------|-----------|
+| wfww,l | sfsvs;  | sdvdsv    |
+| fsdcd  | dvdvsd; | sdvdssv   |
+| wfwef  | fefvs   | dsvdsv    |
+
+---
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions
+
+## Question 1
+
+```{r}
+Course_grading <- data.frame(
+  Course_Elements = c("Assignments", "Laboratories", "Projects", "In-Class Quizzes", "Quizzes (Online)", "Mid-Term Exams", "Final Exam"),
+  Count = c("4", "16", "2", "TDH", "TDH", "2", "1"),
+  Weight_Each = c("3.75%", "0.625%", "3.33% & 6.67%", "-", "-", "10%", "30%"),
+  Total_Weight = c("15%", "10%", "10%", "10%", "5%", "20%", "30%")
+)
+
+print("COURSE DESCRIPTION")
+print(Course_grading)
+
+
+```
+
+Total = 100% There is no curve in this course.
+
+```{r}
+grading_scale <- data.frame(
+  Grade = c("A", "B", "C", "D", "F"),
+  Percentage = c("90% - above", "80% - 89%", "60% - 79%", "50% - 59%", "Below - 50%")
+)
+grading_scale
+```
+
+## Question 2
+
+(A) Make the coplot as the biologist required Hint: Use coplot(), Lab 1, the code provided, and plotting options pch and col to differentiate the MILE variable.
+
+```{r}
+ddt <- read.csv("DDT-1.csv")
+m=with(ddt, as.numeric(factor(MILE))) # A
+
+length(unique(m)) #B
+
+coplot(LENGTH ~ WEIGHT | RIVER * SPECIES, data = ddt, col = unique(m))
+```
+
+(B) Interpret the lower left three conditional plots.
+
+It shows a positive correlation between the length and weight among the CCATFISH species in all four rivers (FCM, LCM, SCM, TRM)
+
+(C) What does line A do?
+
+Line A creates a numeric vector 'm' from the 'MILE' column in the 'ddt' data frame. It first converts 'MILE' to a factor and then to numeric values⁠
+
+(D) What does line B do?
+
+Calculates the number of unique values in 'm' which is MILE
+
+(E) Why are the top six plots empty?
+
+The top six plots empty because there no sample for the species LMBASS and SMBUFFALO.
+
+(F) What is the mean value of DDT found in the sample of CCATFISH caught in the FCM river?
+
+```{r}
+CCATFISH= ddt$DDT[ddt$SPECIES== "CCATFISH" & ddt$RIVER== "FCM"]
+mean(CCATFISH)
+```
+
+## Question 3
+
+### MS1.14
+
+(a) Length of the maximum span (feet): quantitative
+(b) Number of vehicle in lane: quantitative
+(c) Toll bridge (yes or no): qualitative
+(d) Average daily traffic: quantitative
+(e) Condition of the deck (goof, fair, or poor): qualitative
+(f) Bypass or detour length (miles): quantitative
+(g) Route type(interstate, U.S., state, country, or city): qualitative
+
+## Question 4
+
+### MS
+
+(A) What are the names of the four random sampling designs
+
+The four random sampling designs are simple random sampling, stratified random sampling, Cluster Sampling, and Systematic Sampling.
+
+(B) Give a brief description of each.
+
+Simple Random Sampling: This method involves selecting a sample of size n from the population in such a way that every possible sample of size n has an equal chance of being selected.
+
+Stratified Random Sampling: This method is used when the population can be divided into two or more distinct groups, or strata. A random sample is then taken from each group.
+
+Systematic Sampling: This method involves selecting every k-th experimental unit from a list of all units in the population, starting from a randomly chosen point.
+
+Cluster Sampling: In this method, the population is divided into natural groups, or clusters. Then, entire clusters are randomly selected, and data is collected from all units within these selected clusters.
+
+## Question 5
+
+### MS 1.15
+
+Reads the MTBE File
+
+```{r}
+mtbe=read.csv("MTBE.csv", header=TRUE) # You will need to change the address
+head(mtbe) # First six lines
+dim(mtbe) # rows and columns
+ind=sample(1:223,5,replace=FALSE) # random indices
+mtbe[ind,]
+```
+
+(A) 
+
+```{r}
+mtbe=na.omit(mtbe)
+depth=mtbe[mtbe$Aquifier=="Bedrock",]$Depth
+sd(depth)
+
+```
+
+## Question 6
+
+```{r}
+# random sample 
+earthquake = read.csv("EARTHQUAKE.csv")
+earthquake[sample(1:nrow(earthquake), 30, replace=FALSE),]
+```
+
+(A) Make the following plot plot
+
+```{r}
+plot(ts(earthquake$MAG))
+```
+
+(B) Using earthquake data frame find the median
+
+```{r}
+median(earthquake$MAGNITUDE)
+```
+
+## Question 7
+
+(A) What is the data collection method? The data was collection method was stratified sampling
+
+(B) What is the population? Population fish in the Tennessee river.
+
+(C) Give the names of all the qualitative variables
+
+Qualitative variables: River and Species
+
+## Question 8
+
+(A) What type of graph is used to describe this data
+
+Bargraph
+
+(B) Identify the variable measured for each of the 106 robotic design
+
+Robotic Limbs
+
+(C) Use graph to identify the robot design currently most used
+
+Legs
+
+(D) Compute the relative frequencies for the most categories shown in the graph
+
+```{r}
+freq = c(15, 8, 63, 20)                      
+fsum = sum(freq)
+relfreq = freq / fsum
+relativefrequencies <- data.frame(
+  RL = c("None", "Both", "LegsO", "WheelsO"),
+  relfreq
+)
+relativefrequencies
+
+```
+
+(e) pareto diagram
+
+```{r}
+pareto <- function(x, mn = "Pareto barplot", ...) {  # x is a vector
+  x.tab = table(x)
+  xx.tab = sort(x.tab, decreasing = TRUE, index.return = FALSE)
+  cumsum(as.vector(xx.tab)) -> cs
+  length(x.tab) -> lenx
+  bp <- barplot(xx.tab, ylim = c(0,max(cs)),las = 2)
+  lb <- seq(0,cs[lenx], l = 11)
+  axis(side = 4, at = lb, labels = paste(seq(0, 100, length = 11), "%", sep = ""), las = 1, line = -1, col = "Blue", col.axis = "Red")
+  for(i in 1:(lenx-1)){
+    segments(bp[i], cs[i], bp[i+1], cs[i+1], col = i, lwd = 2)
+  }
+  title(main = mn, ...)
+}
+RL = c("None", "Both", "LegsO", "WheelsO")
+l=rep(RL,freq)
+pareto(l)
+
+```
+
+## Question 15
+
+BOXPLOT
+
+```{r}
+
+```
+
+| Col1 | Col2 | Col3 |
+|------|------|------|
+|      |      |      |
+|      |      |      |
+|      |      |      |
+
+```{library(ggplot2)}
+gg_plot <- ggplot(ddt, aes(x = RIVER, y = LENGTH, fill = SPECIES)) + geom_boxplot() + ggtitle("Shone George Kutty Renjan")
+gg_plot
+```
