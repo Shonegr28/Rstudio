@@ -1,0 +1,450 @@
+---
+title: "lab9"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+# Task
+
+## Task 1
+```{r}
+getwd()
+```
+
+
+## Task 2
+Line A draws a sample of size n*iter from x with replacement. Line B constructs a 100(1−𝛼)% confidence interval using xstat.
+
+Replacement is necessary because the sample itself contains only n values. If we resample it without replacement, we would simply end up with the original sample.
+
+### With Replacement
+```{r}
+set.seed(35)  # Gives everyone the same sample
+sam=round(rnorm(20,mean=10,sd=4),2)
+unique(sample(sam,20,replace=TRUE))
+```
+
+```{r}
+unique(sample(sam, 20 ,replace=TRUE))
+```
+```{r}
+unique(sample(sam,20, replace=TRUE))
+```
+
+```{r}
+unique(sample(sam,20,replace=TRUE))
+```
+```{r}
+unique(sample(sam,20,replace=TRUE))
+
+```
+This  displays unique sampling with replacement. We can clearly see that if there are fewer than 20 values, there is some repetition within that vector. The above are five vectors that represent sampling with replacement. 
+
+### Without Replacement
+```{r}
+set.seed(35) # This will give everyone the same sample
+sam=round(rnorm(20,mean=10,sd=4),2)
+unique(sample(sam,20,replace=FALSE))
+```
+
+```{r}
+unique(sample(sam,20,replace=FALSE))
+```
+
+```{r}
+unique(sample(sam,20,replace=FALSE))
+```
+```{r}
+unique(sample(sam,20,replace=FALSE) )
+```
+
+```{r}
+unique(sample(sam,20,replace=FALSE) )
+
+```
+The above represents five vectors that involve sampling without replacement. Since we don’t replace the values after selecting them, once we choose a sample variable, there’s no way to choose it again. This concept is evident in the data provided, where each vector clearly contains all 20 possible values. 
+
+## Task 3
+```{r}
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+
+invisible(list(ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+
+################### END mybooot function #####################
+
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+a=myboot2(iter=10000,sam,fun="mean",alpha=0.05, xlab="mean", col="blue")
+```
+```{r}
+set.seed(30); sam=sam=rchisq(20,df=3)
+b=myboot2(iter=10000,sam,fun="mean",alpha=0.05, xlab="mean", col="Green")
+```
+
+```{r}
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+c=myboot2(iter=10000,sam,fun="mean",alpha=0.05, xlab="mean", col="pink")
+
+```
+
+```{r}
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+d=myboot2(iter=10000,sam,fun="mean",alpha=0.05, xlab="mean", col="orange")
+
+```
+### Point Estimate to the Population Value
+```{r}
+qnorm(0.5,25,10)
+
+```
+
+```{r}
+qchisq(0.5,df=3)
+
+```
+
+```{r}
+qgamma(0.5,shape=2,scale=4)
+```
+
+```{r}
+qbeta(0.5,shape1=3,shape2=4)
+```
+
+### Interval contain the population value
+All of the internals contain the popluation value given above.
+
+### Population Variance Plots
+```{r}
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+
+invisible(list(ci=ci,fun=fun,x=x))# Some output to use if necessary
+}
+
+################### END mybooot function #####################
+
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+a=myboot2(iter=10000,sam,fun="var",alpha=0.2, xlab="mean", col="blue")
+
+```
+
+```{r}
+set.seed(30); sam=rchisq(20,df=3)
+b=myboot2(iter=10000,sam,fun="var",alpha=0.2, xlab="mean", col="green")
+
+```
+
+```{r}
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+c=myboot2(iter=10000,sam,fun="var",alpha=0.2, xlab="mean", col="pink")
+```
+```{r}
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+d=myboot2(iter=10000,sam,fun="var",alpha=0.2, xlab="mean", col="orange")
+```
+
+## Task 4 
+```{r}
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+return(list(ci=ci, fun=fun,x=x,xstat=xstat))
+
+}
+sam=c(1,1,1,2,2,2,2,3,3,3,4,4)
+a=myboot2(x=sam,fun="median")
+
+```
+
+```{r}
+tab <- table(a$xstat)
+barplot(tab,main= "Barplot of xstat",col= rainbow(7))
+```
+The bootstrap interval estimate is (1.5,3) 
+
+## Task 5
+### 95% estimatw intervals
+```{r}
+funtask5 = function(x){
+  mean(x)/median(x)
+}
+```
+
+```{r}
+#A
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+myboot2<-function(iter=10000,x,fun="mean",alpha=0.05,cx=1.5,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=cx)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=cx)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=cx)
+return(list(ci=ci, fun=fun,x=x))
+}
+a=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.05, xlab="mean/median", col="orange")
+
+```
+```{r}
+#b
+set.seed(30); sam=rchisq(20,df=3)
+b=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.05, xlab="mean/median", col="green")
+
+```
+
+```{r}
+#c
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+c=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.05, xlab="mean/median", col="blue")
+
+```
+```{r}
+#D
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+d=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.05, xlab="mean/median", col="purple")
+
+```
+
+### 70% estimate intervals
+```{r}
+#A
+set.seed(39); sam=rnorm(25,mean=25,sd=10)
+a=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.3, xlab="mean/median", col="ORANGE")
+
+```
+```{r}
+#b
+set.seed(30); sam=rchisq(20,df=3)
+b=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.3, xlab="mean/median", col="green")
+
+```
+```{r}
+#c
+set.seed(40); sam=rgamma(30,shape=2,scale=3)
+c=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.3, xlab="mean/median", col="blue")
+
+```
+```{r}
+#D
+set.seed(10); sam=rbeta(20,shape1=3,shape2=4)
+d=myboot2(iter=10000,x = sam,fun="funtask5",alpha=0.3, xlab="mean/median", col="purple")
+
+```
+
+## Task 6
+### Sample 4 distrubutions and 80% bootstrap intervals
+```{r}
+#Weibull
+set.seed(35)
+samn = rweibull(20,shape=2,scale=1) 
+
+myboot2(iter = 10000, samn, fun = "mean", alpha = 0.2, xlab="mean", col= "orange")
+myboot2(iter = 10000, samn, fun = "var", alpha = 0.2, xlab="variance", col= "Blue")
+```
+
+```{r}
+# Geometric
+set.seed(35)
+sam=rgeom(20,prob = 0.2)
+sam
+myboot2(iter = 10000, sam, fun = "mean", alpha = 0.2, xlab="mean", col= "blue")
+myboot2(iter = 10000, sam, fun = "var", alpha = 0.2, xlab="variance", col= "green")
+
+
+```
+
+```{r}
+# binomial
+set.seed(35)
+samb=rbinom(20, size =10, prob=0.4)
+samb
+myboot2(iter = 10000, samb, fun = "mean", alpha = 0.2, xlab="mean", col= "blue")
+myboot2(iter = 10000, samb, fun = "var", alpha = 0.2, xlab="variance", col= "green")
+
+```
+```{r}
+#exponential
+set.seed(35)
+same=rexp(20,rate = 1)
+same
+myboot2(iter = 10000, same, fun = "mean", alpha = 0.2, xlab="mean", col= "blue")
+myboot2(iter = 10000, same, fun = "var", alpha = 0.2, xlab="variance", col= "green")
+```
+
+## Task 7
+### Create bootstrap intervals 
+```{r}
+set.seed(68); sam=rnorm(20,mean = 10,sd=4)
+myboot2(iter = 10000, sam, fun = "quantile", alpha = 0.2, xlab="quantile", col= "blue")
+myboot2(iter = 10000, sam, fun = "IQR", alpha = 0.2, xlab="IQR", col= "GREEN")
+
+
+```
+
+### 95% Confidence interval
+Given mean = 10 and sd =4, then σ/√n = 4/√2= 0.8944 and
+```{r}
+qnorm(1-0.05/2, mean = 0,sd=1)
+```
+The interval given by:(8.247,11.753)
+```{r}
+10-1.959964*0.8944
+
+10+1.959964*0.8944
+```
+
+### 95% bootstrap interval
+```{r}
+set.seed(68); sam=rnorm(20,mean = 10,sd=4)
+myboot2(iter = 10000, sam, fun = "mean", alpha = 0.05, xlab="mean", col= "blue")
+
+```
+The calculated interval and the bootstrap interval are approximately the same, and the population mean falls within both intervals.
+## Task 8
+```{r}
+ddt=read.csv("DDT-1.csv")
+MATH4753SHON2024::myboot2(x=ddt$DDT)
+```
+
+## Task 9
+### Extra
+```{r}
+myboot2 <- function(iter = 10000, x, fun = "mean", alpha = 0.05, cx = 1.5, ...) {  
+  n <- length(x)  # sample size
+  
+  # Create bootstrap samples and calculate the statistic for each sample
+  y <- sample(x, n * iter, replace = TRUE)
+  rs.mat <- matrix(y, nrow = n, ncol = iter, byrow = TRUE)
+  xstat <- apply(rs.mat, 2, fun)  # vector of sample statistics
+  ci <- quantile(xstat, c(alpha / 2, 1 - alpha / 2))  # confidence interval
+  
+  # Histogram with density curve overlay
+  para <- hist(xstat, freq = FALSE, las = 1,
+               main = paste("Bootstrap Distribution of Sample Statistics",
+                            "\n", "alpha =", alpha, " iter =", iter, sep = ""),
+               ...)  # Now relies on ... for 'col' and other arguments
+  
+  lines(density(xstat), col = "blue", lwd = 2)  # density curve
+  
+  # Create a matrix for the observed data and calculate the point estimate
+  mat <- matrix(x, nrow = length(x), ncol = 1, byrow = TRUE)
+  pte <- apply(mat, 2, fun)
+  
+  # Add annotations: point estimate line, confidence interval segments, labels
+  abline(v = pte, lwd = 3, col = "black")  # point estimate
+  segments(ci[1], 0, ci[2], 0, lwd = 4, col = "red")  # confidence interval
+  text(ci[1], 0, paste("(", round(ci[1], 2), sep = ""), col = "red", cex = cx, pos = 2)
+  text(ci[2], 0, paste(round(ci[2], 2), ")", sep = ""), col = "red", cex = cx, pos = 4)
+  
+  # Annotate point estimate on histogram
+  text(pte, max(para$density) / 2, round(pte, 2), col = "black", cex = cx, font = 2)
+  
+  # Make output invisible but accessible if needed
+  invisible(list(ci = ci, fun = fun, x = x))
+}
+set.seed(39)
+sam = rnorm(25, mean = 25, sd = 10)
+a = myboot2(iter = 10000, sam, fun = "mean", alpha = 0.05, xlab = "mean", col = "green")
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
