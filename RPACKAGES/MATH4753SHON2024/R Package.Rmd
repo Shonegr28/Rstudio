@@ -1,0 +1,56 @@
+---
+title: "R Package"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Congratulations for getting this far. To complete the evidence that you have made a working R package please answer the following by using the supplied rmd and upload the knitted html to CANVAS.
+
+I will assume your package is called $MATH4753SHON2024$ and you have packaged and documented functions $mybin$, $cltp$, $mymaxlik$, and $bootpval$.$\\$
+Your actual package name and functions will obviously be called something else.
+
+
+
+# First Function
+Please place your fourth function in the r chunk in the following way:
+
+```{r}
+MATH4753SHON2024::mybin()
+```
+# Second Function 
+Please place your fourth function in the r chunk in the following way:
+
+```{r}
+library(MATH4753SHON2024)
+graph<- cltp(n=7, iter = 10000)
+```
+
+# Third Function 
+Please place your fourth function in the r chunk in the following way:
+
+```{r}
+logbin=function(x,param) log(dbinom(x,prob=param,size=20))
+
+MATH4753SHON2024::mymaxlik(x=c(4,2,4,1,4,5,5,3),param=seq(0,1,length=1000),lfun=logbin,xlab=expression(pi),main="Binomial",cex.main=2)
+```
+
+# Fourth funtion
+Please place your fourth function in the r chunk in the following way:
+
+```{r}
+set.seed(55); x1=rnorm(30,mean = 25,sd=5)
+MATH4753SHON2024::bootpval(x1,mu=25)
+```
+
+This is the address of my GITHUB repository: https://github.com/Shonegr28/Rstudio
+Replace this with your own address.
+
