@@ -1,0 +1,528 @@
+---
+title: "Assignment4"
+author: "Jonathan Douglas"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  pdf_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Set the WD
+
+```{r}
+setwd("/Users/jonathandouglas/MATH4753/Assignments/Assignment4/")
+getwd()
+```
+
+## 1: 7.118
+
+Read in the nzbirds data
+
+```{r}
+allData = Intro2R::myreadxl(dird = "../../DataForClass/Excel/")
+
+bird_data = allData$NZBIRDS
+```
+
+#### Part A: Create random sample of birds
+
+```{r}
+#Use runif() to find the 35 numbers
+species = bird_data$Species
+set.seed(1)
+sam = runif(35, 1, length(species))#Create list of random indicies
+```
+
+#### Part B: Find stats about the body mass of the birds
+
+```{r}
+sam_body_mass_full = bird_data$`Body Mass`
+sam_body_mass = sam_body_mass_full[sam]#Find the body mass for the sample
+```
+
+Find the statistics for this sample.
+
+```{r}
+sam_mean = mean(sam_body_mass)
+sam_sd = sd(sam_body_mass)
+
+cat("Mean of the sample:", sam_mean, " Standard Deviation of the sample:", sam_sd)
+```
+
+Find the confidence interval for the mean of the full sample
+
+```{r}
+#Use the t.test method to calculate the confidence interval
+sam_int = t.test(sam_body_mass, conf.level = 0.95)$conf.int
+
+print("The confidence interval with alpha = 0.05 calcuated from the sample is shown below.")
+print(sam_int)
+```
+
+#### Part C:
+
+The interval with part c practically means that for this single sample, there is a 95% confidence that the mean of the full dataset will lie within the lower and upper bounds of the interval, [-3051.318, 23593.432].
+
+#### Part D:
+
+The real mean for the data is calculated below
+
+```{r}
+real_mean = mean(sam_body_mass_full)
+
+cat("The real mean is:", real_mean)
+```
+
+This does lie in the confidence interval, and this isnt a surprise considering the 95% confidence of the interval.
+
+#### Part E: repeat above steps for the egg length:
+
+Find the egg lengths
+
+```{r}
+sam_egg_legnth_full = bird_data$`Egg Length`
+
+sam_egg_legnth = sam_egg_legnth_full[sam]#Find the body mass for the sample
+```
+
+Find the statistics for this sample.
+
+```{r}
+sam_mean = mean(sam_egg_legnth)
+sam_sd = sd(sam_egg_legnth)
+
+cat("Mean of the sample:", sam_mean, " Standard Deviation of the sample:", sam_sd)
+```
+
+Find the confidence interval for the mean of the full sample
+
+```{r}
+#Use the t.test method to calculate the confidence interval
+sam_int = t.test(sam_egg_legnth, conf.level = 0.95)$conf.int
+
+print("The confidence interval with alpha = 0.05 calcuated from the sample is shown below.")
+print(sam_int)
+```
+
+The interval with part c practically means that for this single sample, there is a 95% confidence that the mean of the full dataset will lie within the lower and upper bounds of the interval, [42.77990, 76.07724].
+
+The real mean for the data is calculated below
+
+```{r}
+real_mean = mean(sam_egg_legnth_full[!is.na(sam_egg_legnth_full)])
+
+cat("The real mean is:", real_mean)
+```
+
+This does lie in the confidence interval, and this isnt a surprise considering the 95% confidence of the interval.
+
+#### Part F:
+
+The bird sample was:\
+
+|            | Number of Species Sampled | Number of Flightless Sampled |
+|------------|---------------------------|------------------------------|
+| Extinct    | 38                        | 21                           |
+| Nonextinct | 78                        | 7                            |
+
+Find a 95% confidence interval for the difference between the proportion of flightless birds for extinct and non-extinct species.
+
+$$
+\hat{p}_{ex} = \frac{21}{38} = 0.5526\\
+\hat{p}_{non} = \frac{7}{78} = 0.0897
+$$
+
+The interval can be calculated using the following formula:
+
+$$
+int = (\hat{p}_{ex} - \hat{p}_{non}) \pm z_{\frac{\alpha}{2}}\sqrt{\frac{p_1q_1}{n_1} + \frac{p_2q_2}{n_2}}
+$$
+
+Use R as a calculator to find this confidence interval:
+
+```{r}
+#Find each catagoty of the birds:
+extinct_f = 21
+extinct_t = 38
+living_f = 7
+living_t = 78
+rat_e = 21/38
+rat_l = 7/78
+alpha = 0.05
+
+#The formula:
+lower = (rat_e - rat_l) - qnorm(1 - alpha/2, 0, 1) * sqrt((rat_e*(1-rat_e))/extinct_t + (rat_l*(1-rat_l))/living_t)
+upper = (rat_e - rat_l) + qnorm(1 - alpha/2, 0, 1) * sqrt((rat_e*(1-rat_e))/extinct_t + (rat_l*(1-rat_l))/living_t)
+
+ci = c()
+ci[1] = lower
+ci[2] = upper
+
+#For lab visualization, print them as well
+cat("Lower Bound:", ci[1], "Upper Bound:", ci[2], "\n")
+```
+
+#### Part E:
+
+The researchers findings do support this theory because the confidence interval for rat_e - rat_l is positive, meaning that the ratio of flightless to extinct birds has to be larger than to the living ones.
+
+## 2: 7.120
+
+#### Part A:
+
+Find the confidence interval for the difference between the two means. Y1 is the southern pine and y2 is the ponderosa pine
+
+$$
+(\bar{y_1} - \bar{y_2}) \pm z_{\alpha / 2}\sqrt{\frac{s_{1}^{2}}{n_1} + \frac{s_{2}^{2}}{n_2}}\\
+\bar{y_1} = 1312;\ \bar{y_2} = 1352;\ n_1 = 100;\ n_2 = 47;\ s_1 = 422;\ s_2 = 271\\
+\\
+(1312 - 1352)\pm 
+$$
+
+Calculate the z value: use normal approximation
+
+```{r}
+alpha = 0.1
+z = z=qnorm(1-(alpha)/2, 0, 1)
+z
+```
+
+Do the calculation:
+
+$$
+int = (1312 - 1352) \pm 1.644854 \sqrt{\frac{422^{2}}{100} + \frac{271^2}{47}}\\
+$$
+
+The interval is calculated to be [-135.1091, 55.1092].
+
+#### Part B:
+
+Use a computer package for this question: This will be the F test.
+
+```{r}
+var1 = 422^2
+df1 = 100 - 1
+
+var2 = 271^2
+df2 = 47 - 1
+
+
+#Create the confidence interval
+a=.1
+ci=c()
+ci[1]=var1/(var2*(qf(1 - a/2, df1=df1,df2=df2)))
+ci[2]=var1/var2*(qf(1 - a/2, df1=df2,df2=df1))
+
+#For lab visualization, print them as well
+cat("Lower Bound:", ci[1], "Upper Bound:", ci[2], "\n")
+```
+
+Based on these results, it is valid to say that the two shear stresses have different variances because the 90% confidence interval does not contain 1, this the interval implies that the var1 is greater than var2.
+
+## 3: 7.128
+
+We know that:
+
+$$
+Z = \frac{Y - \mu}{\sigma}; \ \mu = 0\\
+Z =  \frac{Y - 0}{\sigma} = \frac{Y }{\sigma}\\
+$$
+
+We also know that Z^2 is distributed as a chi-sq distribution with a degree of freedom of 1
+
+$$
+Z^2 = \frac{Y^2}{\sigma^2}
+$$
+
+Because Theorum 6.11 states that:
+
+$$
+\chi^2=\frac{(n-1)S^2}{\sigma^2} 
+$$
+
+where df = (n - 1)
+
+#### Part B:
+
+Create a 95% confidence interval using the information from above:
+
+#Insert IMAGE
+
+Use R to calculate the numerical answer:
+
+```{r}
+low = 0
+```
+
+## 4: 8.24
+
+#### Part A:
+
+The null hypothesis is that the difference in means is 2 µm, while the alternative hypothesis would be that the mean is not 2 µm. 
+
+#### Part B:
+
+$$
+T_{stat} = -1.02\\
+p = 0.322
+$$
+
+#### Part C:
+
+The rejection region is a mu that is less than 1.6358 and greater than 2.1262.
+
+#### Part D: 
+
+It can be assumed that Ho, that the the mean of the input dataset is 2, is plausible in this case.
+
+#### Part E:
+
+The confidence interval and the test statistic lead to the same conclusion about mu because the test statistic is derived from the confidence interval.
+
+## 5: 8.28
+
+#### Part A:
+
+Import the Wisonsin lake data:
+
+```{r}
+lakes = allData$WISCLAKES
+
+doc = lakes$DOC
+
+meanDoc = mean(doc)
+```
+
+Use a T test to see if this is the typical for Wisconsin's lakes:
+
+#### Calculate the t stat:
+
+```{r}
+cat("Mean concentration:", meanDoc,"\n")
+cat("Number of samples:", length(doc),"\n")
+cat("Std dev of data:", sd(doc))
+
+
+```
+
+$$
+t = \frac{\bar y - \mu}{s/\sqrt{n}} = \frac{14.516 - 15}{12.96369/\sqrt{25}} = -0.185
+$$
+
+Find acceptable t interval
+
+```{r}
+qt(1 - 0.1/2, 25 -1 )
+```
+
+Our T value falls within [-1.71, 1.71], so we can accept the null hypothesis that the mean of the data is 15.
+
+
+# ^ FIXME
+
+```{r}
+#Do the t test
+t.test(doc, mu = 15, conf.level = 0.9)
+```
+
+#### Part B:
+
+Find the prob of Ho rejection given Ho is false. This equals the prob of rejecting Ho given H1 is true. This also equals rejecting Ho given mu = 14. 
+
+We know t of rejection = 1.711
+
+Calculate the confidence interval: Bounds are given by
+
+$$
+y = \mu \pm t (\frac{s}{\sqrt{n}}) = 15 \pm 1.711*(\frac{12.96369}{\sqrt{25}}) = [10.564, 19.436]
+$$
+
+We reject Ho what y is outside of this interval. Now, figure out the t values for this interval:
+
+$$
+P(t < \frac{10.564 - 14}{12.963/\sqrt{25}})+ P(t > \frac{19.436 - 14}{12.963/\sqrt{25}}) = P(t < -1.325) + P(t > 2.097)
+$$
+
+Calculate this probability:
+
+```{r}
+pt(-1.325, df = 24) + (1 - pt(2.097, df = 24))
+```
+
+The probability of P(t < -1.325) + P(t > 2.097) is 0.122.
+
+## 6: 
+
+Read in the dataset:
+
+```{r}
+orchard = allData$ORCHARD
+
+ratioFog = orchard$RATIO[orchard$CONDITION == "FOG"]
+ratioFog = ratioFog[!is.na(ratioFog)]
+ratioElse = orchard$RATIO[orchard$CONDITION == "CLEAR" | orchard$CONDITION == "CLOUD"]
+```
+
+Do a two sample t test to determine whether there is any sort of difference between the two datasets
+
+Calculate needed values:
+
+```{r}
+v1 = var(ratioFog)
+n1 = length(ratioFog)
+m1 = mean(ratioFog)
+
+v2 = var(ratioElse)
+n2 = length(ratioElse)
+m2 = mean(ratioElse)
+
+v1
+n1
+v2
+n2
+m1
+m2
+```
+
+
+$$
+s^2_p = \frac{(n_1 - 1)s_1^2 + (n_2-1)s^2_2}{n_1+n_2-2} = \frac{(8 - 1)0.01407 + (4-1)0.0348}{8+4-2} = 0.02029 
+$$
+
+Calculate the test statistic:
+
+$$
+t = \frac{(\bar y_2 - \bar y _ 1) - D_o}{\sqrt{s^2_p(1/n_1+1/n_2)}} = 2.046
+$$
+
+Calculate the confidence interval
+
+```{r}
+qt(1-0.05/2, df = (n1+n2-2))
+```
+
+Since our T is between -2.22, and 2.22, it is plausible that the means of these ratios are the same between the two conditions.
+
+## 7: 8.84
+
+#### Part A:
+
+Find the difference of variances: 
+
+Read in the data:
+
+```{r}
+turbines = allData$GASTURBINE
+
+traditional = turbines$HEATRATE[turbines$ENGINE == "Traditional"]
+aero = turbines$HEATRATE[turbines$ENGINE == "Aeroderiv"]
+```
+
+Do the test using an R library: (ratio will equal 1 because vars are equal)
+
+```{r}
+var.test(traditional, aero, ratio = 1)
+```
+
+We will just use the p value for this test. Since P is way less than 0.05, we can throw out the null hypothesis that var1/var2 is 1 and conclude that the variances are different. Since the ratio. is smaller than 1, the variance of aero is larger.
+
+#### Part B:
+
+Repeat the above problem here with advanced turbine:
+
+```{r}
+turbines = allData$GASTURBINE
+
+advanced = turbines$HEATRATE[turbines$ENGINE == "Advanced"]
+aero = turbines$HEATRATE[turbines$ENGINE == "Aeroderiv"]
+```
+
+Do the test using an R library: (ratio will equal 1 because vars are equal)
+
+```{r}
+var.test(advanced, aero, ratio = 1)
+```
+
+This p value is very very small, meaning that the variances are almost certainly not the same. The denominator variance is much larger than the numorator. 
+
+## 8: 8.99
+
+#### Part A: 
+
+Ho: The variances are the same if the ratio of var1/var2 is 1
+H1: The variances are not the same if the ratio of var1/var2 is not 1.
+
+#### Part B:
+
+Read in the data
+
+```{r}
+ants = allData$GOBIANTS
+
+dry = ants$AntSpecies[ants$Region == "Dry Steppe"]
+gobi= ants$AntSpecies[ants$Region == "Gobi Desert"]
+```
+
+Use var test to analyze whether these samples have different variances.
+
+```{r}
+var.test(dry, gobi, ratio = 1)
+```
+
+#### Part C:
+
+Calculate the F interval:
+
+```{r}
+qf(c(0.05/2,1-0.05/2),4,5)
+```
+
+Our F statistic is in the rejection region if it is < 0.1068 and > 7.3879
+
+#### Part D:
+
+The P-value of the test is 0.7264. 
+
+#### Part E:
+
+This means we can conclude that the variances of these two datasets are equal.
+
+#### Part F:
+
+We assume that these two datasets are independent.
+
+## 9: 8.104
+
+Read in the data for this problem:
+
+```{r}
+thru = allData$THRUPUT
+
+hum = thru$HUMAN
+aut = thru$AUTO
+diff = hum - aut
+
+meand = mean(diff)
+sdd = sd(diff)
+n = length(diff)
+
+meand
+sdd
+n
+
+```
+
+Do = 0 because we think that these two methods will have the same mean
+
+$$
+t = \frac{\bar d - D_o}{s_d/\sqrt{n}} = \frac{-32.6 - 0}{35.03/\sqrt{8}} = -2.632
+$$
+
+From table 7 appendix B, we know that 

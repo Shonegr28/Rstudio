@@ -1,0 +1,380 @@
+---
+title: "Assignment4"
+author: "Shone George Kutty Renjan"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 10/10
+
+# Problems
+```{r}
+getwd()
+```
+
+
+## 1. MS 7.118
+
+```{r}
+df<-read.csv("NZBIRDS.csv")
+df
+
+
+```
+
+### a. 
+Use a random number generator to select a random sample of 35 species from the NZBIRDS file.
+```{r}
+set.seed(5)
+sam <- runif(35,1,116)
+```
+
+### b. 
+Calculate the mean and standard deviation for the 35 sampled values of body mass. Then, use this informa- tion to construct a 95% confidence interval for the mean body mass of all 116 bird species.
+```{r}
+BodyMass <- df$Body.Mass[sam]
+mean(BodyMass)
+sd(BodyMass)
+
+```
+
+### c. 
+Give a practical interpretation of the interval, part b.
+```{r}
+sam_int = t.test(BodyMass, conf.level = 0.95)$conf.int
+sam_int
+MATH4753SHON2024::myci(BodyMass,0.05)
+```
+At 95% confidence level of mean value of body mass for the birds is between 330.4346 and 983.1654.
+
+### d. 
+Check to see if the true mean, m (shown on the MINITAB printout), is included in the confidence interval, part b. Explain why the interval is very likely to contain m.
+
+Since the real mean of the birds' body mass value will be present in 95% of the intervals generated, it is highly likely to include $\mu$.
+
+### e.
+Repeat parts b–d for the 35 sampled values of egg length.
+```{r}
+set.seed(5)
+sam1 <- runif(35,1,116)
+
+```
+
+```{r}
+EggLength <- df$Egg.Length[sam1]
+mean(EggLength)
+sd(EggLength)
+```
+```{r}
+MATH4753SHON2024::myci(EggLength,0.05)
+
+```
+At 95% confidence level of mean value of egg length for the birds is between 38.18352 and 49.9022
+
+### f.
+Ecologists also want to compare the proportions of flightless birds for two New Zealand bird populations—those that are extinct and those that are not extinct. Use the sample information in the table below to form a 95% confidence interval for the difference between the proportion of flightless birds for extinct and nonextinct species.
+$$ (\hat{p}_{ex} - \hat{p}_{non}) \pm z_{\frac{\alpha}{2}}\sqrt{\frac{p_1q_1}{n_1} + \frac{p_2q_2}{n_2}}$$
+```{r}
+p1=21/116
+q1=1-p1
+n1=21
+p2=7/116
+q2=1-p2
+n2=7
+alpha=0.05
+z=qnorm(1-(alpha)/2, 0, 1)
+Lower=p1-p2-z*sqrt((p1*q1)/n1 +(p2*q2)/n2)
+Upper=p1-p2+z*sqrt((p1*q1)/n1 +(p2*q2)/n2)
+
+cat("Lower Bound =", Lower, "Upper Boun =", Upper, "\n")
+
+```
+
+### g. 
+The ecologists are investigating the theory that the pro- portion of flightless birds will be greater for extinct species than for nonextinct species. Does the confi- dence interval, part f, support this theory? Explain
+
+Indeed, it lends credence to this notion, but it may also contradict it. This is so because both positive and negative values are included in the confidence interval.
+
+## 2. MS 7.120
+
+### a. 
+Estimate the difference between the mean shear strengths of epoxy-repaired truss joints for the two species of wood with a 90% confidence interval.
+$$(\bar{y_1} - \bar{y_2}) \pm z_{\alpha / 2}\sqrt{\frac{s_{1}^{2}}{n_1} + \frac{s_{2}^{2}}{n_2}}$$
+```{r}
+ybar1= 1312
+ybar2= 1352
+sigmasquared1=(422)^2
+sigmasquared2 = (271)^2
+n1=100
+n2=47
+
+alpha=0.1
+z=qnorm(1-(alpha)/2, 0, 1)
+Lower=ybar1-ybar2- z*sqrt(sigmasquared1/n1 + sigmasquared2/n2)
+Upper=ybar1-ybar2+z*sqrt(sigmasquared1/n1 + sigmasquared2/n2)
+cat("The 90% confidence interval is [", Lower, ",", Upper, "]")
+
+
+
+```
+
+### b.
+
+Construct a 90% confidence interval for the ratio of the shear stress variances of epoxy-repaired truss joints for the two species of wood. Based on this interval, is there evidence to indicate that the two shear stress variances differ? Explain.
+```{r}
+var1=n1-1
+var2=n2-2
+lowerfq = sigmasquared1 / (sigmasquared2 * qf(1 - alpha/2, df1 = var1, df2 = var2))
+upperfq = sigmasquared1 / sigmasquared2 * qf(1 - alpha/2, df1 = var2, df2 = var1)
+
+cat("Lower Bound =",lowerfq , "Upper Bound =", upperfq, "\n")
+```
+Given these findings, it is reasonable to conclude that the variances of the two shear stresses differ as the 90% CI does not include 1, indicating that $\sigma_{1}^{2}$ is larger than $\sigma_{2}^{2}$.
+
+## 3. MS 7.128
+
+### a. 
+Show that y2/s2 has a chi-square distribution with 1 degree of freedom. (Hint: The result follows directly from Theorem 6.11.
+$$Z = \frac{Y - \mu}{\sigma};$$
+
+When $\mu=0$
+$$Z =\frac{Y }{\sigma}$$
+Z^2 is a chi-sq distrubtion with a degree of freedom of 1
+$$Z^2 =\frac{Y^2}{\sigma^2}$$
+Theorum 6.11 states that:
+$$\chi^2=\frac{(n-1)S^2}{\sigma^2}$$
+
+### b.
+Derive a 95% confidence interval for s2 using y2/s2 as a pivotal statistic.
+$$
+P\left(\chi^2_{1 - \frac{\alpha}{2}} \leq \frac{Y^2}{\sigma^2} \leq \chi^2_{\frac{\alpha}{2}}\right) = 1 - \alpha = P\left(\frac{Y^2}{\chi^2_{\frac{\alpha}{2}}} \leq \sigma^2 \leq \frac{Y^2}{\chi^2_{1 - \frac{\alpha}{2}}}\right)
+$$
+
+## 4. MS 8.24 
+
+```{r}
+df <- read.csv("ROUGHPIPE.csv")
+Rough <-df$ROUGH
+
+```
+
+
+### a.
+Give the null and alternative hypotheses for testing whether the mean surface roughness of coated interior pipe, $\mu$, differs from 2 micrometers.
+$$Null: \mu=2\\ Alternative: \mu\neq 2$$
+
+### b.
+The results of the test, part a, are shown in the MINITAB printout at the bottom of the page. Locate the test statistic and p-value on the printout.
+$$ T_{stat}=-1.02\\ P_{value}=0.322$$
+
+### c.
+Give the rejection region for the hypothesis test, using a = .05 .
+```{r}
+df=length(Rough)-1
+alpha=0.05
+lower=qt(alpha/2,df)
+upper=qt(1-alpha/2,df)
+
+cat("The rejection regionis below:",lower , "and above:", upper, "\n")
+
+```
+
+### d. 
+State the appropriate conclusion for the hypothesis test.
+
+Conclution: Accept the Null hypothesis.
+
+### e.
+In Exercise 7.26 you found a 95% confidence interval for m. Explain why the confidence interval and test sta- tistic lead to the same conclusion about \mu.
+
+Since the test statistic falls within the two rejection regions, they would both result in the same conclusion about 𝑚𝑢. Additionally, the confidence interval contains the value of the null hypothesis.
+
+## 5. MS 8.28
+```{r}
+df <- read.csv("WISCLAKES.csv")
+doc <- df$DOC
+```
+
+### a.
+Use a hypothesis test (at a = .10 ) to make an inference about whether the sample is representative of all Wis- consin lakes for the characteristic, dissolved organic compound.
+```{r}
+t.test(doc, mu = 15, conf.level = 0.9)
+
+```
+The sample is representative of all Wisconsin lakes for dissolved organic compound, as we fail to reject the null hypothesis. Given that the p-value (0.8535) is greater than the significance level (α = 0.10), we fail to reject the null hypothesis, suggesting the sample is representative of all Wisconsin lakes for dissolved organic compound.
+
+### b.
+What is the likelihood that the test, part a, will detect a mean that differs from 15 grams/m3 if, in fact, ma = 14 grams/m3?
+```{r}
+mu0=15
+mua=14
+n=25
+sigma= sd(doc)
+cp = (mu0-mua)/(sigma/(sqrt(n)))
+cp
+
+```
+
+
+## 6. MS 8.44
+```{r}
+df <- read.csv("ORCHARD.csv")
+fog = df$RATIO[df$CONDITION == "FOG"]
+fog = fog[!is.na(fog)]
+clear = df$RATIO[df$CONDITION == "CLEAR" | df$CONDITION == "CLOUD"]
+s1 = var(fog)
+n1 = length(fog)
+mu1 = mean(fog)
+s2 = var(clear)
+n2 = length(clear)
+mu2 = mean(clear)
+
+
+
+```
+
+```{r}
+sp =((n1 - 1) * s1 + (n2 - 1) * s2) / (n1 + n2 - 2)
+sp
+```
+```{r}
+t <- (mu2 - mu1) / sqrt(sp * (1/n1 + 1/n2))
+t
+```
+
+
+```{r}
+qt(1-0.05/2, df = (n1+n2-2))
+```
+
+It is conceivable that the means of these ratios are the same under both scenarios because our T falls between -2.230 and 2.230.
+
+## 7. MS 8.84
+
+### a.
+Conduct a test (at a = .05 ) for equality of heat rate variances for traditional and aeroderivative augmented df df. Use the result to make a statement about the validity of the inference derived in Exercise 8.33 a.
+```{r}
+df=read.csv("GASTURBINE.csv")
+library(dplyr)
+df %>% filter(ENGINE == "Traditional" | ENGINE == "Aeroderiv") %>% var.test(HEATRATE ~ ENGINE, data =.)
+```
+The F-test result (F = 4.297, p-value = 0.004234) provides evidence that the variances of heat rates for Traditional and Aeroderivative df are significantly different, invalidating the equal variance assumption for Exercise 8.33.
+
+### b.
+Conduct a test (at a = .05 ) for equality of heat rate variances for advanced and aeroderivative augmented gas df. Use the result to make a statement about the validity of the inference derived in Exercise 8.39 b.
+```{r}
+HEATRATE = df$HEATRATE[df$ENGINE == "Advanced"]
+ENGINE = df$HEATRATE[df$ENGINE == "Aeroderiv"]
+var.test(HEATRATE, ENGINE, ratio = 1)
+
+```
+The F-test result (F = 0.057974, p-value = 1.192e-06) shows that the variances of heat rates for Advanced and Aeroderivative turbines are significantly different, invalidating the equal variance assumption in Exercise 8.39.
+
+
+
+## 8. MS 8.99
+```{r}
+df <- read.csv("GOBIANTS.csv")
+df
+```
+
+### a.
+Set up H0 and Ha for determining whether the variances are the same.
+
+If the ratio of var1/var2 equals 1 H1, then the variances are same. If the ratio of var1/var2 is not 1, the variances are not the same.
+
+### b. 
+Use the data in the GOBIANTS file to find the test sta-tistic for the test.
+```{r}
+AntSpecies = df$AntSpecies[df$Region == "Dry Steppe"]
+Region= df$AntSpecies[df$Region == "Gobi Desert"]
+var.test(AntSpecies, Region, ratio = 1)
+```
+
+### c.
+Give the rejection region for the test if a=0.05 .
+```{r}
+qf(0.05 / 2, 4, 5) 
+qf(1 - (0.05 / 2), 4, 5) 
+
+
+```
+
+### d.
+Find the approximate p-value of the test.
+
+P-value :0.7264
+
+### e.
+Make the appropriate conclusion in the words of the problem.
+
+The F-test result (F = 1.3684, p-value = 0.7264) indicates that there is no significant evidence to suggest that the variances of AntSpecies and Region are different, so we conclude that the variances are equal.
+
+### f.
+What conditions are required for the test results to be valid?
+
+For the F-test results to be valid, the two datasets must be independent, approximately normally distributed, and measured on an interval or ratio scale.
+
+
+## 9. MS 8.104 
+```{r}
+df<-read.csv("THRUPUT.csv")
+human <- df$HUMAN
+auto <- df$AUTO
+
+t.test(human, auto)
+```
+
+## 10. 8.104
+```{r}
+set.seed(35); sam <- round(rnorm(30,mean=20, sd=3),3)
+
+myboot<-function(iter=10000,x,fun="mean",alpha=0.05,...){  #Notice where the ... is repeated in the code
+n=length(x)   #sample size
+
+
+df=n-1
+s=sd(x)
+ybar=mean(x)
+t_quant=qt(1-alpha/2,df)
+L=ybar-(t_quant*s)/(sqrt(n))
+U=ybar+(t_quant*s)/(sqrt(n))
+
+y=sample(x,n*iter,replace=TRUE)
+rs.mat=matrix(y,nr=n,nc=iter,byrow=TRUE)
+xstat=apply(rs.mat,2,fun) # xstat is a vector and will have iter values in it 
+ci=quantile(xstat,c(alpha/2,1-alpha/2))# Nice way to form a confidence interval
+# A histogram follows
+# The object para will contain the parameters used to make the histogram
+para=hist(xstat,breaks=9,freq=FALSE,las=1,
+main=paste("Histogram of Bootstrap sample statistics","\n","alpha=",alpha," iter=",iter,sep=""),
+...)
+para
+
+#mat will be a matrix that contains the data, this is done so that I can use apply()
+mat=matrix(x,nr=length(x),nc=1,byrow=TRUE)
+
+#pte is the point estimate
+#This uses whatever fun is
+pte=apply(mat,2,fun)
+abline(v=pte,lwd=3,col="Black")# Vertical line
+segments(ci[1],0,ci[2],0,lwd=4)      #Make the segment for the ci
+text(ci[1],0,paste("(",round(ci[1],2),sep=""),col="Red",cex=3)
+text(ci[2],0,paste(round(ci[2],2),")",sep=""),col="Red",cex=3)
+text(L,0.15,paste("(",round(L,2),sep=""),col="Blue",cex=3)
+text(U,0.15,paste(round(U,2),")",sep=""),col="Blue",cex=3)
+
+# plot the point estimate 1/2 way up the density
+text(pte,max(para$density)/2,round(pte,2),cex=3)
+
+return(list(ci=ci,fun=fun,x=x, t=t))# Some output to use if necessary
+}
+myboot(10000,x=sam,fun="mean",alpha=0.05,xlab="mean(x)",col=rainbow(9))
+```
+
