@@ -1,0 +1,15 @@
+Package: MATH4753SHON2024
+Type: Package
+Title: R functions from the lab
+Version: 0.1.0
+Author: Shone George Kutty Renjan
+Maintainer: Shone George Kutty Renjan <shone.gk.renjan@ou.edu>
+Description: MATH 4753 functions detailed from the LABS.
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2024-10-10 04:29:44 UTC; shonerenjan
+Built: R 4.4.1; ; 2024-10-10 04:29:46 UTC; unix

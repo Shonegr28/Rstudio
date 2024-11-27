@@ -1,0 +1,137 @@
+* using log directory ‘/Users/shonerenjan/Desktop/ASM/RPACKAGES/MATH4753SHON2024.Rcheck’
+* using R version 4.4.1 (2024-06-14)
+* using platform: aarch64-apple-darwin20
+* R was compiled by
+    Apple clang version 14.0.0 (clang-1400.0.29.202)
+    GNU Fortran (GCC) 12.2.0
+* running under: macOS 15.1
+* using session charset: UTF-8
+* using options ‘--no-manual --as-cran’
+* checking for file ‘MATH4753SHON2024/DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘MATH4753SHON2024’ version ‘0.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking serialization versions ... OK
+* checking whether package ‘MATH4753SHON2024’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking code files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+mybin: warning in matrix(NA, nr = n, nc = iter, byrow = TRUE): partial
+  argument match of 'nr' to 'nrow'
+mybin: warning in matrix(NA, nr = n, nc = iter, byrow = TRUE): partial
+  argument match of 'nc' to 'ncol'
+mybin: no visible global function definition for ‘barplot’
+mybin: no visible global function definition for ‘rainbow’
+myncurve: no visible global function definition for ‘pnorm’
+myncurve: no visible global function definition for ‘curve’
+myncurve: no visible global function definition for ‘dnorm’
+myncurve: no visible binding for global variable ‘x’
+myncurve: no visible global function definition for ‘polygon’
+ntickets: no visible global function definition for ‘qbinom’
+ntickets: no visible global function definition for ‘tail’
+ntickets : x_function: no visible global function definition for
+  ‘qnorm’
+ntickets: no visible global function definition for ‘uniroot’
+ntickets: no visible global function definition for ‘pbinom’
+ntickets: no visible global function definition for ‘abline’
+ntickets : pnorm_function: no visible global function definition for
+  ‘pnorm’
+ntickets: no visible global function definition for ‘curve’
+ntickets: no visible binding for global variable ‘x’
+Undefined global functions or variables:
+  abline barplot curve dnorm pbinom pnorm polygon qbinom qnorm rainbow
+  tail uniroot x
+Consider adding
+  importFrom("grDevices", "rainbow")
+  importFrom("graphics", "abline", "barplot", "curve", "polygon")
+  importFrom("stats", "dnorm", "pbinom", "pnorm", "qbinom", "qnorm",
+             "uniroot")
+  importFrom("utils", "tail")
+to your NAMESPACE file.
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in Rd file 'mybin.Rd'
+  ‘iter’ ‘n’
+
+Undocumented arguments in Rd file 'myncurve.Rd'
+  ‘mu’ ‘sigma’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... NOTE
+Argument items with no description in Rd file 'mybin.Rd':
+  ‘p’
+Argument items with no description in Rd file 'myncurve.Rd':
+  ‘a’
+* checking for unstated dependencies in examples ... OK
+* checking examples ... ERROR
+Running examples in ‘MATH4753SHON2024-Ex.R’ failed
+The error most likely occurred in:
+
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: mysquare
+> ### Title: The square function
+> ### Aliases: mysquare
+> 
+> ### ** Examples
+> 
+> mysquare(z = 1:10)
+Error in mysquare(z = 1:10) : unused argument (z = 1:10)
+Execution halted
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... ERROR
+  Running ‘testthat.R’
+Running the tests in ‘tests/testthat.R’ failed.
+Last 13 lines of output:
+  > # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
+  > # * https://testthat.r-lib.org/articles/special-files.html
+  > 
+  > library(testthat)
+  > library(MATH4753SHON2024)
+  > 
+  > test_check("MATH4753SHON2024")
+  Error in `test_dir()`:
+  ! No test files found
+  Backtrace:
+      ▆
+   1. └─testthat::test_check("MATH4753SHON2024")
+   2.   └─testthat::test_dir("testthat", package = package, reporter = reporter, ..., load_package = "installed")
+   3.     └─rlang::abort("No test files found")
+  Execution halted
+* checking for non-standard things in the check directory ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 2 ERRORs, 1 WARNING, 2 NOTEs

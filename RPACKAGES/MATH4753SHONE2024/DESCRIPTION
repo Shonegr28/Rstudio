@@ -1,0 +1,10 @@
+Package: MATH4753SHONE2024
+Type: Package
+Title: Task 6 
+Version: 0.1.0
+Author: Shone George Kutty Renjan
+Maintainer: The package maintainer <shone.gk.edu>
+Description: iter.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
